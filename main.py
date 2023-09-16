@@ -10,7 +10,20 @@ def validate_date(str_date):
       print(e)
 
 def list_expenses(args):
-   print('running list expenses method', args.type)
+   with sqlite3.connect('orme.db') as conn:
+      cur = conn.cursor()
+      list_expenses_query = """
+      SELECT * FROM expenses
+      """
+      
+      cur.execute(list_expenses_query)
+      results = cur.fetchall()
+      
+      for row in results:
+         print(row)
+         
+      cur.close()
+         
 
 def run_list_expenses(subparser):
    parser_list = subparsers.add_parser('list', help='list expenses base on specific filters')
@@ -20,6 +33,7 @@ def run_list_expenses(subparser):
 
 def create_expense(args):
    validate_date(args.date)
+   today = date.today().isoformat()
    is_divided = 1 if args.div else 0
     
    con = sqlite3.connect('orme.db')
@@ -31,7 +45,9 @@ def create_expense(args):
       value INTEGER NOT NULL, 
       description TEXT, 
       is_divided INTEGER, 
-      date DATE
+      date TEXT,
+      created TEXT,
+      updated TEXT
       )
    """
    
@@ -40,11 +56,13 @@ def create_expense(args):
       value, 
       description, 
       is_divided, 
-      date) VALUES(
+      date, created, updated) VALUES(
          {args.val}, 
          '{args.desc}', 
          {is_divided}, 
-         '{args.date}'
+         '{args.date}',
+         '{today}',
+         '{today}'
          )
    """
    
@@ -57,16 +75,31 @@ def create_expense(args):
    con.close()
    
    print('The expense was registered successfully...')
-    
 
 def run_create_expense(subparser):
+   CATEGORIES = (
+      'food', 
+      'home',
+      'bills',
+      'technologic',
+      'walk',
+      'clothes'
+   )
+   
+   REGISTER_TYPE = (
+      'expense', 
+      'income'
+   )
+   
+   #TODO Try with a new register type user where dividing arguments in groups is neccesary
    parser_add = subparsers.add_parser('add', help='adds a new expense with all its attributes')
-   parser_add.add_argument('type', help='the type of register to add', choices=['expense', 'income'])
+   parser_add.add_argument('type', help='the type of register to add', choices=REGISTER_TYPE)
    parser_add.add_argument('-val', type=int, help='The  of this particular expense (not the register)', required=True)
    parser_add.add_argument('-desc', type=str, help='The description of this particular expense', required=True)
+   parser_add.add_argument('-caty', type=str, help='The category of the expense', choices=CATEGORIES)
    parser_add.add_argument('-date', type=str, help='Date of this particular expense (not the register date but the execute one) - default: current day', default=date.today().isoformat())
    parser_add.add_argument('-div', help='Whether this expense should be divided by 2 for calculation purposes', action='store_true')
-   parser.set_defaults(func=create_expense)
+   parser_add.set_defaults(func=create_expense)
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser(
