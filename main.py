@@ -42,9 +42,11 @@ def create_expense(args):
    create_expenses_table_query = """
    CREATE TABLE if not exists expenses(
       id INTEGER PRIMARY KEY AUTOINCREMENT, 
-      value INTEGER NOT NULL, 
+      value INTEGER NOT NULL,
+      user TEXT NOT NULL,
+      category TEXT NOT NULL,
       description TEXT, 
-      is_divided INTEGER, 
+      is_divided INTEGER NOT NULL, 
       date TEXT,
       created TEXT,
       updated TEXT
@@ -54,11 +56,17 @@ def create_expense(args):
    insert_into_expenses_query = f"""
    INSERT INTO expenses(
       value, 
+      user,
+      category,
       description, 
       is_divided, 
-      date, created, updated) VALUES(
-         {args.val}, 
-         '{args.desc}', 
+      date, 
+      created,
+      updated) VALUES(
+         {args.value}, 
+         '{args.user}',
+         '{args.category}',
+         '{args.description}', 
          {is_divided}, 
          '{args.date}',
          '{today}',
@@ -68,9 +76,7 @@ def create_expense(args):
    
    cur.execute(create_expenses_table_query)
    cur.execute(insert_into_expenses_query) 
-
    con.commit()
-
    cur.close()
    con.close()
    
@@ -91,12 +97,18 @@ def run_create_expense(subparser):
       'income'
    )
    
+   USERS = (
+      'Carlos',
+      'Faby'
+   )
+   
    #TODO Try with a new register type user where dividing arguments in groups is neccesary
    parser_add = subparsers.add_parser('add', help='adds a new expense with all its attributes')
    parser_add.add_argument('type', help='the type of register to add', choices=REGISTER_TYPE)
-   parser_add.add_argument('-val', type=int, help='The  of this particular expense (not the register)', required=True)
-   parser_add.add_argument('-desc', type=str, help='The description of this particular expense', required=True)
-   parser_add.add_argument('-caty', type=str, help='The category of the expense', choices=CATEGORIES)
+   parser_add.add_argument('-val', '--value', type=int, help='The  of this particular expense (not the register)', required=True)
+   parser_add.add_argument('-desc', '--description', type=str, help='The description of this particular expense', required=True)
+   parser_add.add_argument('-caty', '--category', type=str, help='The category of the expense', choices=CATEGORIES, default=CATEGORIES[0])
+   parser_add.add_argument('-u', '--user', type=str, help='Name of the user that generate the expense', choices=USERS, default=USERS[0])
    parser_add.add_argument('-date', type=str, help='Date of this particular expense (not the register date but the execute one) - default: current day', default=date.today().isoformat())
    parser_add.add_argument('-div', help='Whether this expense should be divided by 2 for calculation purposes', action='store_true')
    parser_add.set_defaults(func=create_expense)
