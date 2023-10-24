@@ -3,11 +3,18 @@ from datetime import date
 
 from .expenses.run_expenses import create_expense, list_expenses
 
+
 def run_list_expenses(subparser):
-   parser_list = subparsers.add_parser('list', help='list expenses base on specific filters')
-   parser_list.add_argument('type', help='the type of register to list', choices=['expense', 'income'])
-   parser_list.add_argument('-all', help='list all expenses', action='store_true')
-   parser_list.set_defaults(func=list_expenses)
+    parser_list = subparsers.add_parser('list',
+                                        help='list expenses with filters')
+    parser_list.add_argument('type',
+                             help='the type of register to list',
+                             choices=['expense', 'income'])
+    parser_list.add_argument('-all',
+                             help='list all expenses',
+                             action='store_true')
+    parser_list.set_defaults(func=list_expenses)
+
 
 def run_create_expense(subparser):
    CATEGORIES = (
@@ -40,16 +47,20 @@ def run_create_expense(subparser):
    parser_add.add_argument('-div', help='Whether this expense should be divided by 2 for calculation purposes', action='store_true')
    parser_add.set_defaults(func=create_expense)
 
+
 if __name__ == '__main__':
-   parser = argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(
                      prog="Orme",
-                     description="This program allows the user to register all its expenses",
-                     epilog="TechSsus - Carlos Correa"   
+                     description="""
+                     This program allows the user to manage the expenses,
+                     incomes and other financial situations
+                     """,
+                     epilog="TechSsus - Carlos Correa"
                     )
 
-   subparsers = parser.add_subparsers(title='[sub-commands]')
-   run_create_expense(subparsers)
-   run_list_expenses(subparsers)
-   
-   args = parser.parse_args()
-   args.func(args)
+    subparsers = parser.add_subparsers(title='[sub-commands]', required=True)
+    run_create_expense(subparsers)
+    run_list_expenses(subparsers)
+
+    args = parser.parse_args()
+    args.func(args)

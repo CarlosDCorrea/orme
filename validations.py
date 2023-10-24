@@ -1,9 +1,8 @@
-from datetime import date 
+from datetime import date
 
 
 def validate_date(str_date):
-   print(type(str_date))
-   try:
-      date.fromisoformat(str_date)
-   except ValueError as e:
-      print(e)
+    try:
+        date.fromisoformat(str_date)
+    except ValueError as e:
+        print(e)

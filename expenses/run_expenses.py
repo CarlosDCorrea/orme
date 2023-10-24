@@ -5,23 +5,6 @@ from ..validations import validate_date
 from ..settings import DATABASE_URL
 
 
-def list_expenses(args):
-   with sqlite3.connect(DATABASE_URL) as conn:
-      cur = conn.cursor()
-      list_expenses_query = """SELECT * FROM expenses"""
-      
-      try:
-         cur.execute(list_expenses_query)
-         results = cur.fetchall()
-
-         for row in results:
-            print(row)
-      except sqlite3.OperationalError as e:
-         print(f'the following error has ocurred: {e}')
-      finally:
-         cur.close()
-         
-
 def create_expense(args):
    validate_date(args.date)
    today = date.today().isoformat()
@@ -70,3 +53,40 @@ def create_expense(args):
        cur.close()
        
        print('The expense was registered successfully...')
+
+
+def list_expenses(args):
+    table_name = 'expenses'
+    with sqlite3.connect(DATABASE_URL) as conn:
+        cur = conn.cursor()
+        list_expenses_query = f"""SELECT * FROM {table_name}"""
+        get_expenses_table_columns_query = f'PRAGMA table_info({table_name})'
+
+        try:
+            # get the table columns
+            cur.execute(get_expenses_table_columns_query)
+            columns = cur.fetchall()
+
+            for column in columns:
+               print(f'{column[1]:>9} {"|" if len(columns) - 1 != column[0] else ""}', end="")
+            print()
+
+            cur.execute(list_expenses_query)
+            results = cur.fetchall()
+
+            for row in results:
+                expense_id, value, user, category, description, is_divided, date, created, updated = row
+                print(f'{expense_id:9} |{value:9} |{user:9} |{category:9} |{description:9} |{is_divided:9} |{date:9} |{created:9} |{updated:9}')
+        except sqlite3.OperationalError:
+            error = f'We can\'t perform this action because the table {table_name} does not exists'
+            print(error)
+        finally:
+            cur.close()
+
+
+def generate_graph(*args):
+    pass
+
+
+def generate_stats(*args):
+    pass
