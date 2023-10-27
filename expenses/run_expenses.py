@@ -6,53 +6,53 @@ from ..settings import DATABASE_URL
 
 
 def create_expense(args):
-   validate_date(args.date)
-   today = date.today().isoformat()
-   is_divided = 1 if args.div else 0
-   
-   with sqlite3.connect(DATABASE_URL) as con:
-       cur = con.cursor()
-       
-       create_expenses_table_query = """
-       CREATE TABLE if not exists expenses(
-          id INTEGER PRIMARY KEY AUTOINCREMENT, 
-          value INTEGER NOT NULL,
-          user TEXT NOT NULL,
-          category TEXT NOT NULL,
-          description TEXT, 
-          is_divided INTEGER NOT NULL, 
-          date TEXT,
-          created TEXT,
-          updated TEXT
-          )
-       """
-       
-       insert_into_expenses_query = f"""
-       INSERT INTO expenses(
-          value, 
-          user,
-          category,
-          description, 
-          is_divided, 
-          date, 
-          created,
-          updated) VALUES(
-             {args.value}, 
-             '{args.user}',
-             '{args.category}',
-             '{args.description}', 
-             {is_divided}, 
-             '{args.date}',
-             '{today}',
-             '{today}'
-             )"""
-       
-       cur.execute(create_expenses_table_query)
-       cur.execute(insert_into_expenses_query) 
-       con.commit()
-       cur.close()
-       
-       print('The expense was registered successfully...')
+    validate_date(args.date)
+    today = date.today().isoformat()
+    is_divided = 1 if args.div else 0
+
+    with sqlite3.connect(DATABASE_URL) as con:
+        cur = con.cursor()
+
+        create_expenses_table_query = """
+        CREATE TABLE if not exists expenses(
+           id INTEGER PRIMARY KEY AUTOINCREMENT, 
+           value INTEGER NOT NULL,
+           user TEXT NOT NULL,
+           category TEXT NOT NULL,
+           description TEXT, 
+           is_divided INTEGER NOT NULL, 
+           date TEXT,
+           created TEXT,
+           updated TEXT
+           )
+        """
+
+        insert_into_expenses_query = f"""
+        INSERT INTO expenses(
+           value, 
+           user,
+           category,
+           description, 
+           is_divided, 
+           date, 
+           created,
+           updated) VALUES(
+              {args.value},
+              '{args.user}',
+              '{args.category}',
+              '{args.description}',
+              {is_divided},
+              '{args.date}',
+              '{today}',
+              '{today}'
+              )"""
+
+        cur.execute(create_expenses_table_query)
+        cur.execute(insert_into_expenses_query) 
+        con.commit()
+        cur.close()
+
+        print('The expense was registered successfully...')
 
 
 def list_expenses(args):
@@ -68,7 +68,7 @@ def list_expenses(args):
             columns = cur.fetchall()
 
             for column in columns:
-               print(f'{column[1]:>9} {"|" if len(columns) - 1 != column[0] else ""}', end="")
+                print(f'{column[1]:>9} {"|" if len(columns) - 1 != column[0] else ""}', end="")
             print()
 
             cur.execute(list_expenses_query)
@@ -84,9 +84,9 @@ def list_expenses(args):
             cur.close()
 
 
-def generate_graph(*args):
+def generate_graph(args):
     pass
 
 
-def generate_stats(*args):
+def generate_stats(args):
     pass
