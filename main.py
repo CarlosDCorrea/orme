@@ -11,28 +11,20 @@ def run_list_expenses(subparser):
     date_exclusive_group = parser_list.add_mutually_exclusive_group()
     # value_exclusive_group = parser_list.add_mutually_exclusive_group()
     # exclusive arguments
-    date_exclusive_group.add_argument('--btd',
-                                      '-between-dates',
-                                      action='store_true',
-                                      help='Filter the data between two dates provided (e.g)')
     date_exclusive_group.add_argument('--gtd',
-                                      '-greater-than',
-                                      action='store_true',
+                                      '-greater-than-date',
+                                      type=str,
                                       help='Filter by dates greater than this')
     date_exclusive_group.add_argument('--ltd',
-                                      '-less-than',
-                                      action='store_true',
+                                      '-less-than-date',
+                                      type=str,
                                       help='Filter by dates less than this')
-    date_exclusive_group.add_argument('--eqd',
-                                      '-equal',
-                                      action='store_true',
+    date_exclusive_group.add_argument('--date',
+                                      '-date',
+                                      type=str,
                                       help='Filter by dates equal to this')
 
-    """value_exclusive_group.add_argument('--btw-values',
-                                       '-between-values',
-                                       type=str,
-                                       help='Filter the data between two values provided')
-    value_exclusive_group.add_argument('--gt',
+    """ value_exclusive_group.add_argument('--gt',
                                        '-greater-than',
                                        action='store_true',
                                        help='Filter by values greater than this')
@@ -44,12 +36,9 @@ def run_list_expenses(subparser):
                                        '-equal',
                                        action='store_true',
                                        help='Filter by values equal to this') """
-    parser_list.add_argument('type',
+    """ parser_list.add_argument('type',
                              help='the type of register to list',
-                             choices=['expense', 'income'])
-    parser_list.add_argument('-all',
-                             help='list all expenses',
-                             action='store_true')
+                             choices=['expense', 'income']) """
     parser_list.set_defaults(func=list_expenses)
 
 
@@ -129,6 +118,6 @@ if __name__ == '__main__':
     run_list_expenses(subparsers)
 
     args = parser.parse_args()
-    print('is in it::', parser._mutually_exclusive_groups)
-    print(args)
+    """ print('is in it::', parser._mutually_exclusive_groups)
+    print(args) """
     args.func(args)
