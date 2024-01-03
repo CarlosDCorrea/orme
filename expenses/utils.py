@@ -1,27 +1,49 @@
-from ..validations import validate_date
+import types
 
 
 def create_list_expense_query(args) -> None | str:
-    query = ''
-    date = ''
-    operator = None
-    table_name = 'expenses'
+    # get only the arguments that the user enter (e.g argument != None) and is not a function
+    present_arguments = [
+        (argument, value) for argument, value in vars(args).items()
+        if value is not None and not isinstance(value, types.FunctionType)
+    ]
 
-    if args.ltd:
-        date = args.ltd
-        operator = '<='
-    elif args.gtd:
-        date = args.gtd
-        operator = '>='
-    elif args.date:
-        date = args.date
-        operator = '='
-    else:
-        query = f"SELECT * FROM {table_name} ORDER BY date DESC"
-        return query
+    # TODO how should validate date string? and check sqlite docs about operators with dates
+    match present_arguments:
+        case [('gtd', value)]:
+            where_statement = f""">= '{value}'"""
+        case [('ltd', value)]:
+            where_statement = f"""<= '{value}'"""
+        case [('gtd', start_date), ('ltd', end_date)]:
+            where_statement = f"""BETWEEN '{start_date}' AND '{end_date}'"""
+        case [('date', value)]:
+            where_statement = f"""= '{value}'"""
+        case _:
+            where_statement = ''
 
-    validate_date(date)
+    return _list() if not where_statement else _list_by_date(where_statement)
 
-    query = f"SELECT * FROM {table_name} WHERE date {operator} Date('{date}') ORDER BY date DESC"
-    print('final query ', query)
+
+def _list(offset=0, limit=10, table_name='expenses') -> str:
+    query = f"""
+            SELECT *
+            FROM expenses
+            ORDER BY date DESC
+            LIMIT {offset}, {limit}
+    """
     return query
+
+
+def _list_by_date(where_statement):
+    query = f"""
+            SELECT *
+            FROM expenses
+            WHERE date {where_statement}
+            """
+
+    print(f"query {query}")
+    return query
+
+
+def _list_by_value(date=True, gtd=False, ltd=False):
+    pass
