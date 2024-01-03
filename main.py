@@ -8,22 +8,38 @@ def run_list_expenses(subparser):
     parser_list = subparsers.add_parser('list',
                                         help='list expenses with filters')
 
-    date_exclusive_group = parser_list.add_mutually_exclusive_group()
-    # value_exclusive_group = parser_list.add_mutually_exclusive_group()
-    # exclusive arguments
-    date_exclusive_group.add_argument('--gtd',
-                                      '-greater-than-date',
-                                      type=str,
-                                      help='Filter by dates greater than this')
-    date_exclusive_group.add_argument('--ltd',
-                                      '-less-than-date',
-                                      type=str,
-                                      help='Filter by dates less than this')
-    date_exclusive_group.add_argument('--date',
-                                      '-date',
-                                      type=str,
-                                      help='Filter by dates equal to this')
-
+    parser_list.add_argument('--gtd',
+                             '-greater-than-date',
+                             type=str,
+                             help='Filter by dates greater than this one')
+    parser_list.add_argument('--ltd',
+                             '-less-than-date',
+                             type=str,
+                             help='Filter by dates less than this one')
+    parser_list.add_argument('--date',
+                             '-date',
+                             type=str,
+                             help='Filter by dates equal to this one')
+    parser_list.add_argument('--gtv',
+                             '-greater-than-value',
+                             type=int,
+                             help='Filter by values greater than this one')
+    parser_list.add_argument('--ltv',
+                             '-less-than-value',
+                             type=int,
+                             help='Filter by values less than this one')
+    parser_list.add_argument('--value',
+                             '-value',
+                             type=int,
+                             help='Filter by values equal to this one')
+    parser_list.add_argument('--cat',
+                             '-category',
+                             type=str,
+                             help='Filter by this specific category')
+    parser_list.add_argument('--u',
+                             '-user',
+                             type=str,
+                             help='Filter by the specified user')
     """ value_exclusive_group.add_argument('--gt',
                                        '-greater-than',
                                        action='store_true',
@@ -48,8 +64,9 @@ def run_create_expense(subparser):
         'home',
         'bills',
         'technologic',
-        'walk',
-        'clothes'
+        'travel',
+        'clothes',
+        'other'
     )
 
     REGISTER_TYPE = (
@@ -57,6 +74,7 @@ def run_create_expense(subparser):
         'income'
     )
 
+    # This could be a tuple of users that can be get from the db
     USERS = (
         'Carlos',
         'Faby'
