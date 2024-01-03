@@ -64,16 +64,17 @@ def list_expenses(args):
         cur = conn.cursor()
         list_expenses_query = create_list_expense_query(args)
 
-        get_expenses_table_columns_query = f'PRAGMA table_info({table_name})'
+        get_table_columns_query = f'PRAGMA table_info({table_name})'
 
         try:
             # get the table columns
-            cur.execute(get_expenses_table_columns_query)
+            cur.execute(get_table_columns_query)
             columns = cur.fetchall()
             cur.execute(list_expenses_query)
             results = cur.fetchall()
 
-            data = DataFrame.from_records(data=results, columns=[column[1] for column in columns])
+            data = DataFrame.from_records(data=results,
+                                          columns=[column[1] for column in columns])
 
             if data.empty:
                 print('Nothing to show')
@@ -82,7 +83,8 @@ def list_expenses(args):
             print(data)
         except sqlite3.OperationalError as e:
             error = f'We can\'t perform this action because the table {table_name} does not exists'
-            print(f'This is the real error {e}')
+            print('This is the real error')
+            print(e)
             print(f'error {error}')
         finally:
             cur.close()
