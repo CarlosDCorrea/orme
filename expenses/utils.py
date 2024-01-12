@@ -31,17 +31,17 @@ def _list(offset=0, limit=10, table_name='expenses') -> str:
             ORDER BY date DESC
             LIMIT {offset}, {limit}
     """
+
     return query
 
 
-def _list_by_date(where_statement):
+def _list_by_date(where_statement: str) -> str:
     query = f"""
             SELECT *
             FROM expenses
             WHERE date {where_statement}
             """
 
-    print(f"query {query}")
     return query
 
 
