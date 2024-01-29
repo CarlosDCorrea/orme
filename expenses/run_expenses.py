@@ -59,20 +59,34 @@ def create_expense(args):
 
 
 def list_expenses(args):
-    table_name = 'expenses'
+    TABLE_NAME = 'expenses'
     with sqlite3.connect(DATABASE_URL) as conn:
         cur = conn.cursor()
-        list_expenses_query = create_list_expense_query(args)
 
-        get_table_columns_query = f'PRAGMA table_info({table_name})'
+        # Create the query based in the args
+        # query_results
+        # query_count
+        # offset
+        # limit
+        result = create_list_expense_query(args)
+        
+        print(result)
+
+        get_table_columns_query = f'PRAGMA table_info({TABLE_NAME})'
 
         try:
             # get the table columns
             cur.execute(get_table_columns_query)
             columns = cur.fetchall()
-            cur.execute(list_expenses_query)
+
+            cur.execute(result)
             results = cur.fetchall()
 
+            """ cur.execute(result['query_count'])
+            count = cur.fetchone() """
+
+            # TODO thing about how to implement the 'load more data'
+            # but later, implement first the core functionality
             data = DataFrame.from_records(data=results,
                                           columns=[column[1] for column in columns])
 
@@ -82,7 +96,7 @@ def list_expenses(args):
 
             print(data)
         except sqlite3.OperationalError as e:
-            error = f'We can\'t perform this action because the table {table_name} does not exists'
+            error = f'We can\'t perform this action because the table {TABLE_NAME} does not exists'
             print('This is the real error')
             print(e)
             print(f'error {error}')
