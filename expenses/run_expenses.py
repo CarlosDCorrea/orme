@@ -1,107 +1,87 @@
 import sqlite3
-from datetime import date
+from typing import DefaultDict, Union, Tuple, List
 
 from pandas import DataFrame
 
-from ..validations import validate_date
 from ..settings import DATABASE_URL
 from .utils import create_list_expense_query
+from ..db.connection import create_connection_and_execute_query
+
+
+TABLE_NAME = 'expenses'
 
 
 def create_expense(args):
-    validate_date(args.date)
-    today = date.today().isoformat()
-    is_divided = 1 if args.div else 0
-
-    with sqlite3.connect(DATABASE_URL) as con:
-        cur = con.cursor()
-
-        create_expenses_table_query = """
-        CREATE TABLE if not exists expenses(
-           id INTEGER PRIMARY KEY AUTOINCREMENT,
-           value INTEGER NOT NULL,
-           user TEXT NOT NULL,
-           category TEXT NOT NULL,
-           description TEXT,
-           is_divided INTEGER NOT NULL,
-           date TEXT,
-           created TEXT,
-           updated TEXT
-           )
-        """
-
-        insert_into_expenses_query = f"""
-        INSERT INTO expenses(
-           value,
-           user,
-           category,
-           description,
-           is_divided,
-           date,
-           created,
-           updated) VALUES(
-              {args.value},
-              '{args.user}',
-              '{args.category}',
-              '{args.description}',
-              {is_divided},
-              '{args.date}',
-              '{today}',
-              '{today}'
-              )"""
-
-        cur.execute(create_expenses_table_query)
-        cur.execute(insert_into_expenses_query)
-        con.commit()
-        cur.close()
-
-        print('The expense was registered successfully...')
+    create_connection_and_execute_query(TABLE_NAME, 'create', args)
 
 
 def list_expenses(args):
     TABLE_NAME = 'expenses'
+    is_finished: bool = False
+
+    must_increment: bool = False
     with sqlite3.connect(DATABASE_URL) as conn:
         cur = conn.cursor()
 
-        # Create the query based in the args
-        # query_results
-        # query_count
-        # offset
-        # limit
-        result = create_list_expense_query(args)
-        
-        print(result)
+        while not is_finished:
+            # Create the query based in the args
+            # query_results
+            # query_count
+            # offset
+            # limit     
+            result: DefaultDict[str, Union[str, int]
+                                ] = create_list_expense_query(args, must_increment)
 
-        get_table_columns_query = f'PRAGMA table_info({TABLE_NAME})'
+            print(result)
 
-        try:
-            # get the table columns
-            cur.execute(get_table_columns_query)
-            columns = cur.fetchall()
+            get_table_columns_query = f'PRAGMA table_info({TABLE_NAME})'
 
-            cur.execute(result)
-            results = cur.fetchall()
+            try:
+                # is the first time that this executes
+                if not must_increment:
+                    # get the table columns
+                    cur.execute(get_table_columns_query)
+                    columns = cur.fetchall()
 
-            """ cur.execute(result['query_count'])
-            count = cur.fetchone() """
+                    # TODO: use pandas sql reader instead of cur to retrieve the rows
+                    # get the requested data
+                    cur.execute(result['query_results'])
+                    results: List[Tuple[Union[str, int]]] = cur.fetchall()
 
-            # TODO thing about how to implement the 'load more data'
-            # but later, implement first the core functionality
-            data = DataFrame.from_records(data=results,
-                                          columns=[column[1] for column in columns])
+                    # get the count of the table's rows
+                    cur.execute(result['query_count'])
+                    count: int = cur.fetchone()[0]
+                else:
+                    results.extend(cur.execute(result['query_results']))
+                # TODO thing about how to implement the 'load more data'
+                # but later, implement first the core functionality
+                print(result)
+                data = DataFrame.from_records(data=results,
+                                              columns=[column[1] for column in columns])
 
-            if data.empty:
-                print('Nothing to show')
-                return
+                if data.empty:
+                    print('Nothing to show')
+                    return
 
-            print(data)
-        except sqlite3.OperationalError as e:
-            error = f'We can\'t perform this action because the table {TABLE_NAME} does not exists'
-            print('This is the real error')
-            print(e)
-            print(f'error {error}')
-        finally:
-            cur.close()
+                print(data)
+
+                if len(results) == count:
+                    is_finished = True
+                else:
+                    user_input = input('Show more:')
+                    if not user_input:
+                        must_increment = True
+                    if user_input == 'q':
+                        is_finished = True
+
+            except sqlite3.OperationalError as e:
+                error = f'We can\'t perform this action because the table {TABLE_NAME} does not exists'
+                print('This is the real error')
+                print(e)
+                print(f'error {error}')
+                cur.close()
+
+        cur.close()
 
 
 def generate_graph(args):
