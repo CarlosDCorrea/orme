@@ -2,9 +2,10 @@ import argparse
 from datetime import date
 
 from .expenses.run_expenses import create_expense, list_expenses
+from orme import __app_name__, __version__
 
 
-def run_list_expenses(subparser):
+def run_list_expenses(subparsers):
     parser_list = subparsers.add_parser('list',
                                         help='list expenses with filters')
 
@@ -58,7 +59,7 @@ def run_list_expenses(subparser):
     parser_list.set_defaults(func=list_expenses)
 
 
-def run_create_expense(subparser):
+def run_create_expense(subparsers):
     CATEGORIES = (
         'food',
         'home',
@@ -121,7 +122,12 @@ def run_create_expense(subparser):
     parser_add.set_defaults(func=create_expense)
 
 
-if __name__ == '__main__':
+def package_info(args):
+    if args.version:
+        print(f'{__app_name__} version: {__version__}')
+
+
+def main():
     parser = argparse.ArgumentParser(
         prog="Orme",
         description="""
@@ -131,11 +137,18 @@ if __name__ == '__main__':
         epilog="TechSsus - Carlos Correa"
     )
 
-    subparsers = parser.add_subparsers(title='[sub-commands]', required=True)
+    parser.add_argument(
+        '-v',
+        '--version',
+        help='Gives the version of the package',
+        action='store_true'
+    )
+
+    parser.set_defaults(func=package_info)
+
+    subparsers = parser.add_subparsers(title='[sub-commands]')
     run_create_expense(subparsers)
     run_list_expenses(subparsers)
 
     args = parser.parse_args()
-    """ print('is in it::', parser._mutually_exclusive_groups)
-    print(args) """
     args.func(args)
