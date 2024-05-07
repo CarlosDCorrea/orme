@@ -3,6 +3,7 @@ from datetime import date
 
 from .expenses.run_expenses import create_expense, list_expenses
 from orme import __app_name__, __version__
+from .dept.run_dept import create_dept
 
 
 def run_list_expenses(subparsers):
@@ -122,6 +123,59 @@ def run_create_expense(subparsers):
     parser_add.set_defaults(func=create_expense)
 
 
+def run_create_dept(subparsers):
+    parser_add = subparsers.add_parser('add',
+                                       help='adds a new debt register whether the user is the debtor or the lender')
+    parser_add.add_argument('-dp',
+                            '--deptor',
+                            type=str,
+                            help='The name of the deptor [optional]'
+                            )
+    parser_add.add_argument('-ld',
+                            '--lender',
+                            type=str,
+                            help='The name of the lender [optional]')
+    parser_add.add_argument('-desc',
+                            '--description',
+                            type=str,
+                            help='A short description of the dept [optional]')
+    parser_add.add_argument('-val',
+                            '--value',
+                            type=str,
+                            help='The value of the dept',
+                            required=True)
+    parser_add.add_argument('-ir',
+                            '--interest-rate',
+                            type=float,
+                            help='The interest rate monthly of the dept default 0.0',
+                            action='store_const',
+                            const=0.0)
+    parser_add.set_defaults(func=create_dept)
+
+
+def run_list_depts(subparsers):
+    parser_list = subparsers.add_parser('list',
+                                        help='list depts with or without filteres')
+
+    parser_list.add_argument('--btd',
+                             '-between-date',
+                             type=str,
+                             help='Filter by dates greater than this one',
+                             action='extend')
+    parser_list.add_argument('--date',
+                             '-date',
+                             type=str,
+                             help='Filter by dates equal to this one')
+    parser_list.add_argument('--btv',
+                             '-between-value',
+                             type=int,
+                             help='Filter by values greater than this one')
+    parser_list.add_argument('--value',
+                             '-value',
+                             type=int,
+                             help='Filter by values equal to this one')
+
+
 def package_info(args):
     if args.version:
         print(f'{__app_name__} version: {__version__}')
@@ -141,7 +195,8 @@ def main():
         '-v',
         '--version',
         help='Gives the version of the package',
-        action='store_true'
+        action='version',
+        version='%(prog)s 1.0'
     )
 
     parser.set_defaults(func=package_info)
@@ -149,6 +204,9 @@ def main():
     subparsers = parser.add_subparsers(title='[sub-commands]')
     run_create_expense(subparsers)
     run_list_expenses(subparsers)
+
+    run_create_dept(subparsers)
+    run_list_depts(subparsers)
 
     args = parser.parse_args()
     args.func(args)
