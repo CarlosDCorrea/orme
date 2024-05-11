@@ -3,7 +3,63 @@ from datetime import date
 
 from .expenses.run_expenses import create_expense, list_expenses
 from orme import __app_name__, __version__
-from .dept.run_dept import create_dept
+from .debt.run_debt import create_debt, list_debts
+
+
+def run_create_expense(subparsers):
+    CATEGORIES = (
+        'food',
+        'home',
+        'bills',
+        'technologic',
+        'travel',
+        'clothes',
+        'other'
+    )
+
+    # This could be a tuple of users that can be get from the db
+    USERS = (
+        'Carlos',
+        'Faby'
+    )
+
+    # TODO Try with a new register type user where dividing arguments in groups is neccesary
+    parser_add = subparsers.add_parser('add',
+                                       help='adds a new expense with all its attributes')
+
+    parser_add.add_argument('-val',
+                            '--value',
+                            type=int,
+                            help='The  of this particular expense (not the register)',
+                            required=True)
+    parser_add.add_argument('-desc',
+                            '--description',
+                            type=str,
+                            help='The description of this particular expense',
+                            required=True)
+    parser_add.add_argument('-caty',
+                            '--category',
+                            type=str,
+                            help='The category of the expense',
+                            choices=CATEGORIES,
+                            default=CATEGORIES[0])
+    parser_add.add_argument('-u',
+                            '--user',
+                            type=str,
+                            help='Name of the user that generate the expense',
+                            choices=USERS,
+                            default=USERS[0])
+    parser_add.add_argument('-date',
+                            type=str,
+                            help="""
+                            Date of this particular expense in isoformat YYYY-MM-DD
+                            (not the register date but the execute one)
+                            - default: current day""",
+                            default=date.today().isoformat())
+    parser_add.add_argument('-div',
+                            help='Whether this expense should be divided by 2 for calculation purposes',
+                            action='store_true')
+    parser_add.set_defaults(func=create_expense)
 
 
 def run_list_expenses(subparsers):
@@ -42,85 +98,7 @@ def run_list_expenses(subparsers):
                              '-user',
                              type=str,
                              help='Filter by the specified user')
-    """ value_exclusive_group.add_argument('--gt',
-                                       '-greater-than',
-                                       action='store_true',
-                                       help='Filter by values greater than this')
-    value_exclusive_group.add_argument('--lt',
-                                       '-less-than',
-                                       action='store_true',
-                                       help='Filter by values less than this')
-    value_exclusive_group.add_argument('--eq',
-                                       '-equal',
-                                       action='store_true',
-                                       help='Filter by values equal to this') """
-    """ parser_list.add_argument('type',
-                             help='the type of register to list',
-                             choices=['expense', 'income']) """
     parser_list.set_defaults(func=list_expenses)
-
-
-def run_create_expense(subparsers):
-    CATEGORIES = (
-        'food',
-        'home',
-        'bills',
-        'technologic',
-        'travel',
-        'clothes',
-        'other'
-    )
-
-    REGISTER_TYPE = (
-        'expense',
-        'income'
-    )
-
-    # This could be a tuple of users that can be get from the db
-    USERS = (
-        'Carlos',
-        'Faby'
-    )
-
-    # TODO Try with a new register type user where dividing arguments in groups is neccesary
-    parser_add = subparsers.add_parser('add',
-                                       help='adds a new expense with all its attributes')
-    parser_add.add_argument('type',
-                            help='the type of register to add',
-                            choices=REGISTER_TYPE)
-    parser_add.add_argument('-val',
-                            '--value',
-                            type=int,
-                            help='The  of this particular expense (not the register)',
-                            required=True)
-    parser_add.add_argument('-desc',
-                            '--description',
-                            type=str,
-                            help='The description of this particular expense',
-                            required=True)
-    parser_add.add_argument('-caty',
-                            '--category',
-                            type=str,
-                            help='The category of the expense',
-                            choices=CATEGORIES,
-                            default=CATEGORIES[0])
-    parser_add.add_argument('-u',
-                            '--user',
-                            type=str,
-                            help='Name of the user that generate the expense',
-                            choices=USERS,
-                            default=USERS[0])
-    parser_add.add_argument('-date',
-                            type=str,
-                            help="""
-                            Date of this particular expense in isoformat YYYY-MM-DD
-                            (not the register date but the execute one)
-                            - default: current day""",
-                            default=date.today().isoformat())
-    parser_add.add_argument('-div',
-                            help='Whether this expense should be divided by 2 for calculation purposes',
-                            action='store_true')
-    parser_add.set_defaults(func=create_expense)
 
 
 def run_create_dept(subparsers):
@@ -148,37 +126,58 @@ def run_create_dept(subparsers):
                             '--interest-rate',
                             type=float,
                             help='The interest rate monthly of the dept default 0.0',
-                            action='store_const',
-                            const=0.0)
-    parser_add.set_defaults(func=create_dept)
+                            default=0.0)
+    parser_add.add_argument('-date',
+                            type=str,
+                            help="""
+                            Date of start of this particualr debt in isoformat YYYY-MM-DD
+                            (not the register date but the execute one)
+                            - default: current day""",
+                            default=date.today().isoformat())
+    parser_add.set_defaults(func=create_debt)
 
 
 def run_list_depts(subparsers):
     parser_list = subparsers.add_parser('list',
                                         help='list depts with or without filteres')
 
-    parser_list.add_argument('--btd',
-                             '-between-date',
-                             type=str,
-                             help='Filter by dates greater than this one',
-                             action='extend')
-    parser_list.add_argument('--date',
-                             '-date',
-                             type=str,
-                             help='Filter by dates equal to this one')
-    parser_list.add_argument('--btv',
-                             '-between-value',
-                             type=int,
-                             help='Filter by values greater than this one')
-    parser_list.add_argument('--value',
-                             '-value',
-                             type=int,
-                             help='Filter by values equal to this one')
+    mutually_exclusive_by_value = parser_list.add_mutually_exclusive_group(required=True)
+    mutually_exclusive_by_value.add_argument('--gtv',
+                                             '-between-date',
+                                             type=int,
+                                             help='Filter by dates greater than this one')
+    mutually_exclusive_by_value.add_argument('--ltv',
+                                             '-between-value',
+                                             type=int,
+                                             help='Filter by values greater than this one')
+    mutually_exclusive_by_value.add_argument('--eqv',
+                                             '-equal-to-value',
+                                             type=int,
+                                             help='Filter by values equal to this one')
+    mutually_exclusive_by_value.add_argument('--btv',
+                                             '-between-values',
+                                             type=int,
+                                             help='Filter by values equal to this one',
+                                             action='extend')
+    mutually_exclusive_by_value.add_argument('--all',
+                                             action='store_true')
+    parser_list.set_defaults(func=list_debts)
 
 
-def package_info(args):
-    if args.version:
-        print(f'{__app_name__} version: {__version__}')
+def run_options(subparsers):
+    parser_expenses = subparsers.add_parser('expenses',
+                                            help='Executes all operations related to expenses')
+    parser_debts = subparsers.add_parser('debts',
+                                         help='Executes all operations related to debt')
+
+    subparser_expenses = parser_expenses.add_subparsers(title='[sub-commands]')
+    subparser_debts = parser_debts.add_subparsers(title='[sub-commands]')
+
+    run_create_expense(subparser_expenses)
+    run_list_expenses(subparser_expenses)
+
+    run_create_dept(subparser_debts)
+    run_list_depts(subparser_debts)
 
 
 def main():
@@ -191,22 +190,20 @@ def main():
         epilog="TechSsus - Carlos Correa"
     )
 
+    # QUESTION: Support localization?
     parser.add_argument(
         '-v',
         '--version',
         help='Gives the version of the package',
         action='version',
-        version='%(prog)s 1.0'
+        version=f'{__app_name__} version: {__version__}'
     )
 
-    parser.set_defaults(func=package_info)
+    # REFACTOR: Commands should go 'expenses list' instead of 'list expenses'
+    subparsers_options = parser.add_subparsers(title='[commands]')
 
-    subparsers = parser.add_subparsers(title='[sub-commands]')
-    run_create_expense(subparsers)
-    run_list_expenses(subparsers)
-
-    run_create_dept(subparsers)
-    run_list_depts(subparsers)
+    run_options(subparsers_options)
 
     args = parser.parse_args()
+    print(f'These are the args: {args}')
     args.func(args)
