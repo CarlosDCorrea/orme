@@ -1,6 +1,6 @@
 import pytest
 
-from ..validations import validate_date
+from ..orme.validations import validate_date
 
 
 def test_validate_date():
