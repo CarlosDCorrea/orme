@@ -27,7 +27,7 @@ def run_create_expense(subparsers):
     parser_add = subparsers.add_parser('add',
                                        help='adds a new expense with all its attributes')
 
-    parser_add.add_argument('-val',
+    parser_add.add_argument('-v',
                             '--value',
                             type=int,
                             help='The  of this particular expense (not the register)',
@@ -35,30 +35,31 @@ def run_create_expense(subparsers):
     parser_add.add_argument('-desc',
                             '--description',
                             type=str,
-                            help='The description of this particular expense',
-                            required=True)
+                            help='The description of this particular expense [optional]')
+    # For future versions categories and users should be data from the database
     parser_add.add_argument('-caty',
                             '--category',
                             type=str,
-                            help='The category of the expense',
+                            help='The category of the expense (default: food)',
                             choices=CATEGORIES,
                             default=CATEGORIES[0])
     parser_add.add_argument('-u',
                             '--user',
                             type=str,
-                            help='Name of the user that generate the expense',
+                            help='Name of the user that generate the expense (default: Carlos)',
                             choices=USERS,
                             default=USERS[0])
-    parser_add.add_argument('-date',
+    parser_add.add_argument('--date',
                             type=str,
                             help="""
-                            Date of this particular expense in isoformat YYYY-MM-DD
+                            The date when this expense ocurred in isoformat YYYY-MM-DD
                             (not the register date but the execute one)
                             - default: current day""",
                             default=date.today().isoformat())
-    parser_add.add_argument('-div',
+    parser_add.add_argument('--div',
                             help='Whether this expense should be divided by 2 for calculation purposes',
                             action='store_true')
+
     parser_add.set_defaults(func=create_expense)
 
 
@@ -104,6 +105,12 @@ def run_list_expenses(subparsers):
 def run_create_dept(subparsers):
     parser_add = subparsers.add_parser('add',
                                        help='adds a new debt register whether the user is the debtor or the lender')
+    # TODO: Read more about the names of the arguments (dest, metavar)
+    parser_add.add_argument('-v',
+                            '--value',
+                            type=str,
+                            help='The value of the dept',
+                            required=True)
     parser_add.add_argument('-dp',
                             '--deptor',
                             type=str,
@@ -117,23 +124,19 @@ def run_create_dept(subparsers):
                             '--description',
                             type=str,
                             help='A short description of the dept [optional]')
-    parser_add.add_argument('-val',
-                            '--value',
-                            type=str,
-                            help='The value of the dept',
-                            required=True)
     parser_add.add_argument('-ir',
                             '--interest-rate',
                             type=float,
                             help='The interest rate monthly of the dept default 0.0',
                             default=0.0)
-    parser_add.add_argument('-date',
+    parser_add.add_argument('--date',
                             type=str,
                             help="""
                             Date of start of this particualr debt in isoformat YYYY-MM-DD
                             (not the register date but the execute one)
                             - default: current day""",
                             default=date.today().isoformat())
+
     parser_add.set_defaults(func=create_debt)
 
 
@@ -141,26 +144,49 @@ def run_list_depts(subparsers):
     parser_list = subparsers.add_parser('list',
                                         help='list depts with or without filteres')
 
-    mutually_exclusive_by_value = parser_list.add_mutually_exclusive_group(required=True)
+    mutually_exclusive_by_value = parser_list.add_mutually_exclusive_group()
+    mutually_exclusive_by_date = parser_list.add_mutually_exclusive_group()
+
     mutually_exclusive_by_value.add_argument('--gtv',
-                                             '-between-date',
+                                             '-greater-than-value',
                                              type=int,
-                                             help='Filter by dates greater than this one')
+                                             help='Filter by values greater than this one (inclusive)')
     mutually_exclusive_by_value.add_argument('--ltv',
-                                             '-between-value',
+                                             '-lower-than-value',
                                              type=int,
-                                             help='Filter by values greater than this one')
+                                             help='Filter by values lower than this one (inclusive)')
     mutually_exclusive_by_value.add_argument('--eqv',
                                              '-equal-to-value',
                                              type=int,
                                              help='Filter by values equal to this one')
     mutually_exclusive_by_value.add_argument('--btv',
                                              '-between-values',
+                                             nargs=2,
+                                             metavar=('value-start',
+                                                      'value-end'),
                                              type=int,
-                                             help='Filter by values equal to this one',
+                                             help='Filter by values between the values provided (inclusive)',
                                              action='extend')
-    mutually_exclusive_by_value.add_argument('--all',
-                                             action='store_true')
+    mutually_exclusive_by_date.add_argument('--gtd',
+                                            '-greater-than-date',
+                                            type=int,
+                                            help='Filter by dates greater than this one (inclusive)')
+    mutually_exclusive_by_date.add_argument('--ltd',
+                                            '-lower-than-date',
+                                            type=int,
+                                            help='Filter by dates lower than this one (inclusive)')
+    mutually_exclusive_by_date.add_argument('--eqd',
+                                            '-equal-to-date',
+                                            type=str,
+                                            help='Filter by dates equal to this one')
+    mutually_exclusive_by_date.add_argument('--btd',
+                                            '-between-dates',
+                                            nargs=2,
+                                            metavar=('date-start', 'date-end'),
+                                            type=str,
+                                            help='Filter by dates between the dates provided (inclusive)',
+                                            action='extend')
+
     parser_list.set_defaults(func=list_debts)
 
 
