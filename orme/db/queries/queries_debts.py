@@ -1,54 +1,51 @@
 from argparse import Namespace
 from datetime import date
-from typing import Union, List, Tuple
+from typing import List, Tuple, Union
+
 from orme.db.common import generate_sql_where_by_operator
 
 
-TABLE_NAME = 'expenses'
-
-
-get_table_columns_query = f'PRAGMA table_info({TABLE_NAME})'
+TABLE_NAME = 'debts'
 
 
 def generate_create_query(args: Namespace) -> Tuple[str]:
-    today = date.today().isoformat()
-    is_divided = 1 if args.div else 0
+    today: str = date.today().isoformat()
 
-    create_expenses_table_query = """
-    CREATE TABLE if not exists expenses(
+    create_debts_table_query: str = f"""
+    CREATE TABLE if not exists {TABLE_NAME}(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         value INTEGER NOT NULL,
-        user TEXT NOT NULL,
-        category TEXT NOT NULL,
+        deptor TEXT,
+        lender TEXT,
         description TEXT,
-        is_divided INTEGER NOT NULL,
+        interest_rate INTEGER NOT NULL,
         date TEXT,
         created TEXT,
         updated TEXT
         )
     """
 
-    insert_into_expenses_query = f"""
-    INSERT INTO expenses(
+    insert_into_debts_query = f"""
+    INSERT INTO {TABLE_NAME}(
         value,
-        user,
-        category,
+        deptor,
+        lender,
         description,
-        is_divided,
+        interest_rate,
         date,
         created,
         updated) VALUES(
             {args.value},
-            '{args.user}',
-            '{args.category}',
+            '{args.deptor}',
+            '{args.lender}',
             '{args.description}',
-            {is_divided},
+            {args.interest_rate},
             '{args.date}',
             '{today}',
             '{today}'
             )"""
 
-    return (create_expenses_table_query, insert_into_expenses_query)
+    return (create_debts_table_query, insert_into_debts_query)
 
 
 def generate_list_query(args: List[Tuple[str, Union[str | int]]]) -> Tuple[str]:
@@ -60,6 +57,7 @@ def generate_list_query(args: List[Tuple[str, Union[str | int]]]) -> Tuple[str]:
     if args:
         where_statement = generate_sql_where_by_operator(args)
 
+    # NOTICE: The blank spaces could be a problem when evaluating the query
     query_results = f"""
                     SELECT * FROM {TABLE_NAME}
                     {where_statement}
@@ -74,3 +72,11 @@ def generate_list_query(args: List[Tuple[str, Union[str | int]]]) -> Tuple[str]:
                    """
 
     return (query_results, query_count)
+
+
+def generate_update_query():
+    pass
+
+
+def generate_delete_query():
+    pass
