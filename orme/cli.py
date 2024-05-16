@@ -25,7 +25,8 @@ def run_create_expense(subparsers):
 
     # TODO Try with a new register type user where dividing arguments in groups is neccesary
     parser_add = subparsers.add_parser('add',
-                                       help='adds a new expense with all its attributes')
+                                       help='adds a new expense with all its attributes',
+                                       allow_abbrev=False)
 
     parser_add.add_argument('-v',
                             '--value',
@@ -65,38 +66,58 @@ def run_create_expense(subparsers):
 
 def run_list_expenses(subparsers):
     parser_list = subparsers.add_parser('list',
-                                        help='list expenses with filters')
+                                        help='list expenses with filters',
+                                        allow_abbrev=True)
 
-    parser_list.add_argument('--gtd',
-                             '-greater-than-date',
-                             type=str,
-                             help='Filter by dates greater than this one')
-    parser_list.add_argument('--ltd',
-                             '-less-than-date',
-                             type=str,
-                             help='Filter by dates less than this one')
-    parser_list.add_argument('--date',
-                             '-date',
-                             type=str,
-                             help='Filter by dates equal to this one')
-    parser_list.add_argument('--gtv',
-                             '-greater-than-value',
-                             type=int,
-                             help='Filter by values greater than this one')
-    parser_list.add_argument('--ltv',
-                             '-less-than-value',
-                             type=int,
-                             help='Filter by values less than this one')
-    parser_list.add_argument('--value',
-                             '-value',
-                             type=int,
-                             help='Filter by values equal to this one')
-    parser_list.add_argument('--cat',
-                             '-category',
+    mutually_exclusive_by_value = parser_list.add_mutually_exclusive_group()
+    mutually_exclusive_by_date = parser_list.add_mutually_exclusive_group()
+
+    # In the future could be only a query command that is able to resolve every query db
+    mutually_exclusive_by_value.add_argument('-gtv',
+                                             '--greater-than-value',
+                                             type=int,
+                                             help='Filter by values greater than this one')
+    mutually_exclusive_by_value.add_argument('-ltv',
+                                             '--less-than-value',
+                                             type=int,
+                                             help='Filter by values less than this one')
+    mutually_exclusive_by_value.add_argument('-btv',
+                                             '--between-value',
+                                             nargs=2,
+                                             type=int,
+                                             metavar=('start-value',
+                                                      'end-value'),
+                                             action='extend',
+                                             help='Filter by the values provided (inclusive)')
+    mutually_exclusive_by_value.add_argument('-eqv',
+                                             '--equal-to-value',
+                                             type=int,
+                                             help="Filter by values equals to this one")
+    mutually_exclusive_by_date.add_argument('-gtd',
+                                            '--greater-than-date',
+                                            type=str,
+                                            help='Filter by dates greater than this one')
+    mutually_exclusive_by_date.add_argument('-ltd',
+                                            '--less-than-date',
+                                            type=str,
+                                            help='Filter by dates less than this one')
+    mutually_exclusive_by_date.add_argument('-btd',
+                                            '--between-date',
+                                            nargs=2,
+                                            type=int,
+                                            metavar=('start-date', 'end-date'),
+                                            action='extend',
+                                            help='Filter by the dates provided (inclusive)')
+    mutually_exclusive_by_date.add_argument('-eqd',
+                                            '--equal-to-date',
+                                            type=int,
+                                            help="Filter by dates equals to this one")
+    parser_list.add_argument('-caty',
+                             '--category',
                              type=str,
                              help='Filter by this specific category')
-    parser_list.add_argument('--u',
-                             '-user',
+    parser_list.add_argument('-u',
+                             '--user',
                              type=str,
                              help='Filter by the specified user')
     parser_list.set_defaults(func=list_expenses)
@@ -104,14 +125,15 @@ def run_list_expenses(subparsers):
 
 def run_create_dept(subparsers):
     parser_add = subparsers.add_parser('add',
-                                       help='adds a new debt register whether the user is the debtor or the lender')
+                                       help='adds a new debt register whether the user is the debtor or the lender',
+                                       allow_abbrev=False)
     # TODO: Read more about the names of the arguments (dest, metavar)
     parser_add.add_argument('-v',
                             '--value',
-                            type=str,
+                            type=int,
                             help='The value of the dept',
                             required=True)
-    parser_add.add_argument('-dp',
+    parser_add.add_argument('-dpr',
                             '--deptor',
                             type=str,
                             help='The name of the deptor [optional]'
@@ -147,40 +169,40 @@ def run_list_depts(subparsers):
     mutually_exclusive_by_value = parser_list.add_mutually_exclusive_group()
     mutually_exclusive_by_date = parser_list.add_mutually_exclusive_group()
 
-    mutually_exclusive_by_value.add_argument('--gtv',
-                                             '-greater-than-value',
+    mutually_exclusive_by_value.add_argument('-gtv',
+                                             '--greater-than-value',
                                              type=int,
                                              help='Filter by values greater than this one (inclusive)')
-    mutually_exclusive_by_value.add_argument('--ltv',
-                                             '-lower-than-value',
+    mutually_exclusive_by_value.add_argument('-ltv',
+                                             '--lower-than-value',
                                              type=int,
                                              help='Filter by values lower than this one (inclusive)')
-    mutually_exclusive_by_value.add_argument('--eqv',
-                                             '-equal-to-value',
+    mutually_exclusive_by_value.add_argument('-eqv',
+                                             '--equal-to-value',
                                              type=int,
                                              help='Filter by values equal to this one')
-    mutually_exclusive_by_value.add_argument('--btv',
-                                             '-between-values',
+    mutually_exclusive_by_value.add_argument('-btv',
+                                             '--between-values',
                                              nargs=2,
                                              metavar=('value-start',
                                                       'value-end'),
                                              type=int,
                                              help='Filter by values between the values provided (inclusive)',
                                              action='extend')
-    mutually_exclusive_by_date.add_argument('--gtd',
-                                            '-greater-than-date',
-                                            type=int,
+    mutually_exclusive_by_date.add_argument('-gtd',
+                                            '--greater-than-date',
+                                            type=str,
                                             help='Filter by dates greater than this one (inclusive)')
-    mutually_exclusive_by_date.add_argument('--ltd',
-                                            '-lower-than-date',
-                                            type=int,
+    mutually_exclusive_by_date.add_argument('-ltd',
+                                            '--lower-than-date',
+                                            type=str,
                                             help='Filter by dates lower than this one (inclusive)')
-    mutually_exclusive_by_date.add_argument('--eqd',
-                                            '-equal-to-date',
+    mutually_exclusive_by_date.add_argument('-eqd',
+                                            '--equal-to-date',
                                             type=str,
                                             help='Filter by dates equal to this one')
-    mutually_exclusive_by_date.add_argument('--btd',
-                                            '-between-dates',
+    mutually_exclusive_by_date.add_argument('-btd',
+                                            '--between-dates',
                                             nargs=2,
                                             metavar=('date-start', 'date-end'),
                                             type=str,
