@@ -77,12 +77,12 @@ def generate_update_query(args: List[Tuple[str, str | int]], table_name: str) ->
 
     today = date.today().isoformat()
 
-    update_expense_table_query = f"""
+    update_table_query = f"""
     UPDATE {table_name}
-    SET {", ".join([" = ".join([str(item) for item in arg]) for arg in args[1:]])}, updated = {today}
-    WHERE {"=".join([str(item) for item in args[0]])}"""
+    SET {", ".join([" = ".join([f"'{item}'" for item in arg]) for arg in args[1:]])}, updated = '{today}'
+    WHERE {" = ".join([str(item) for item in args[0]])}"""
 
-    return (update_expense_table_query)
+    return (update_table_query,)
 
 
 def generate_delete_query(args: List[Tuple[str, str | int]], table_name) -> Tuple[str]:
@@ -90,4 +90,4 @@ def generate_delete_query(args: List[Tuple[str, str | int]], table_name) -> Tupl
     DELETE FROM {table_name}
     WHERE {"=".join([str(item) for item in args[0]])}"""
 
-    return (delete_expense_query)
+    return (delete_expense_query,)

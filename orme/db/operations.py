@@ -57,9 +57,9 @@ def list_(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> 
 
 def update(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
     update_query = queries[0]
-
+    print(f'update query {update_query}')
     cur.execute(update_query)
-    cur.commit()
+    con.commit()
     cur.close()
 
     print('Registro actualizado satisfactoriamente')
@@ -69,7 +69,7 @@ def delete(cur: Cursor, con: Connection, queries: List[str], table_name: str) ->
     delete_query = queries[0]
 
     cur.execute(delete_query)
-    cur.commit()
+    con.commit()
     cur.close()
 
     print('Registro eliminado satisfactoriamente')

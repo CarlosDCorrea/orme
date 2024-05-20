@@ -206,7 +206,7 @@ def run_create_debt(subparsers):
                             '--interest-rate',
                             type=float,
                             help='The interest rate monthly of the dept default 0.0',
-                            default=0.0)
+                            default=0.00)
     parser_add.add_argument('--date',
                             type=str,
                             help="""
