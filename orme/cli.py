@@ -1,28 +1,35 @@
 import argparse
 from datetime import date
 
-from .expenses.run_expenses import create_expense, list_expenses
 from orme import __app_name__, __version__
-from .debt.run_debt import create_debt, list_debts
+from orme.expenses.run_expenses import (create_expense,
+                                        list_expenses,
+                                        update_expense,
+                                        delete_expense)
+from orme.debt.run_debt import (create_debt,
+                                list_debts,
+                                update_debt,
+                                delete_debt)
+
+
+CATEGORIES = (
+    'food',
+    'home',
+    'bills',
+    'technologic',
+    'travel',
+    'clothes',
+    'other'
+)
+
+# This could be a tuple of users that can be get from the db
+USERS = (
+    'Carlos',
+    'Faby'
+)
 
 
 def run_create_expense(subparsers):
-    CATEGORIES = (
-        'food',
-        'home',
-        'bills',
-        'technologic',
-        'travel',
-        'clothes',
-        'other'
-    )
-
-    # This could be a tuple of users that can be get from the db
-    USERS = (
-        'Carlos',
-        'Faby'
-    )
-
     # TODO Try with a new register type user where dividing arguments in groups is neccesary
     parser_add = subparsers.add_parser('add',
                                        help='adds a new expense with all its attributes',
@@ -123,7 +130,56 @@ def run_list_expenses(subparsers):
     parser_list.set_defaults(func=list_expenses)
 
 
-def run_create_dept(subparsers):
+def run_update_expenses(subparsers):
+    parser_update = subparsers.add_parser('update',
+                                          help='Update the specified expense',
+                                          allow_abbrev=False)
+
+    parser_update.add_argument('--id',
+                               type=str,
+                               help='the id of the expense that needs to be updated',
+                               required=True)
+    parser_update.add_argument('-v',
+                               '--value',
+                               type=int,
+                               help='The new value of this particular expense')
+    parser_update.add_argument('-desc',
+                               '--description',
+                               type=str,
+                               help='The description of this particular expense [optional]')
+    # For future versions categories and users should be data from the database
+    parser_update.add_argument('-caty',
+                               '--category',
+                               type=str,
+                               choices=CATEGORIES,
+                               help='The category of the expense (default: food)')
+    parser_update.add_argument('-u',
+                               '--user',
+                               type=str,
+                               choices=USERS,
+                               help='Name of the user that generate the expense (default: Carlos)')
+    parser_update.add_argument('--date',
+                               type=str,
+                               help="The date when this expense ocurred in isoformat YYYY-MM-DD")
+    # TODO: Think about what to do with this field
+    """ parser_update.add_argument('--div',
+                                       help='Whether this expense should be divided by 2 for calculation purposes',
+                                       action='store_true') """
+    parser_update.set_defaults(func=update_expense)
+
+
+def run_delete_expense(subparsers):
+    parser_delete = subparsers.add_parser('delete',
+                                          help='Delete the specified expense')
+
+    parser_delete.add_argument('--id',
+                               type=str,
+                               help='The id of the expense to delete',
+                               required=True)
+    parser_delete.set_defaults(func=delete_expense)
+
+
+def run_create_debt(subparsers):
     parser_add = subparsers.add_parser('add',
                                        help='adds a new debt register whether the user is the debtor or the lender',
                                        allow_abbrev=False)
@@ -150,7 +206,7 @@ def run_create_dept(subparsers):
                             '--interest-rate',
                             type=float,
                             help='The interest rate monthly of the dept default 0.0',
-                            default=0.0)
+                            default=0.00)
     parser_add.add_argument('--date',
                             type=str,
                             help="""
@@ -162,7 +218,7 @@ def run_create_dept(subparsers):
     parser_add.set_defaults(func=create_debt)
 
 
-def run_list_depts(subparsers):
+def run_list_debts(subparsers):
     parser_list = subparsers.add_parser('list',
                                         help='list depts with or without filteres')
 
@@ -212,6 +268,55 @@ def run_list_depts(subparsers):
     parser_list.set_defaults(func=list_debts)
 
 
+def run_update_debt(subparsers):
+    parser_update = subparsers.add_parser('update',
+                                          help="Update the specified debt",
+                                          allow_abbrev=False)
+
+    parser_update.add_argument('--id',
+                               type=str,
+                               help='The id of the debt to be updated',
+                               required=True)
+
+    parser_update.add_argument('-v',
+                               '--value',
+                               type=int,
+                               help='The value of the dept')
+    parser_update.add_argument('-dpr',
+                               '--deptor',
+                               type=str,
+                               help='The name of the deptor [optional]'
+                               )
+    parser_update.add_argument('-ld',
+                               '--lender',
+                               type=str,
+                               help='The name of the lender [optional]')
+    parser_update.add_argument('-desc',
+                               '--description',
+                               type=str,
+                               help='A short description of the dept [optional]')
+    parser_update.add_argument('-ir',
+                               '--interest-rate',
+                               type=float,
+                               help='The interest rate monthly of the dept (default 0.0)',
+                               default=0.0)
+    parser_update.add_argument('--date',
+                               type=str,
+                               help='Date of start of this particualr debt in isoformat YYYY-MM-DD')
+
+    parser_update.set_defaults(func=update_debt)
+
+
+def run_delete_debt(subparsers):
+    parser_delete = subparsers.add_parser('delete',
+                                          help='Delete the specified debt')
+
+    parser_delete.add_argument('--id',
+                               help='The id of the debt to be deleted')
+
+    parser_delete.set_defaults(func=delete_debt)
+
+
 def run_options(subparsers):
     parser_expenses = subparsers.add_parser('expenses',
                                             help='Executes all operations related to expenses')
@@ -223,9 +328,13 @@ def run_options(subparsers):
 
     run_create_expense(subparser_expenses)
     run_list_expenses(subparser_expenses)
+    run_update_expenses(subparser_expenses)
+    run_delete_expense(subparser_expenses)
 
-    run_create_dept(subparser_debts)
-    run_list_depts(subparser_debts)
+    run_create_debt(subparser_debts)
+    run_list_debts(subparser_debts)
+    run_update_debt(subparser_debts)
+    run_delete_debt(subparser_debts)
 
 
 def main():

@@ -3,7 +3,10 @@ from typing import Tuple, List
 
 from orme.utils import get_present_arguments
 
-from orme.db.queries.queries_debts import generate_create_query, generate_list_query
+from orme.db.queries.queries_debts import generate_create_query
+from orme.db.queries.common_queries import (generate_list_query,
+                                            generate_update_query,
+                                            generate_delete_query)
 from orme.db.connection import create_connection_and_execute_query
 from orme.settings import (QUERY_CREATE,
                            QUERY_LIST,
@@ -20,14 +23,13 @@ def define_query(query_type: int, args: Namespace) -> str:
     queries: List[str] = []
 
     if query_type == QUERY_CREATE:
-        print(present_arguments)
         queries = generate_create_query(args)
     if query_type == QUERY_LIST:
-        queries = generate_list_query(present_arguments)
+        queries = generate_list_query(present_arguments, TABLE_NAME)
     if query_type == QUERY_UPDATE:
-        pass
+        queries = generate_update_query(present_arguments, TABLE_NAME)
     if query_type == QUERY_DELETE:
-        pass
+        queries = generate_delete_query(present_arguments, TABLE_NAME)
 
     return queries
 

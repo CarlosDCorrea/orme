@@ -55,9 +55,21 @@ def list_(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> 
         cur.close()
 
 
-def update():
-    pass
+def update(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
+    update_query = queries[0]
+    print(f'update query {update_query}')
+    cur.execute(update_query)
+    con.commit()
+    cur.close()
+
+    print('Registro actualizado satisfactoriamente')
 
 
-def delete():
-    pass
+def delete(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
+    delete_query = queries[0]
+
+    cur.execute(delete_query)
+    con.commit()
+    cur.close()
+
+    print('Registro eliminado satisfactoriamente')
