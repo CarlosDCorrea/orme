@@ -298,8 +298,7 @@ def run_update_debt(subparsers):
     parser_update.add_argument('-ir',
                                '--interest-rate',
                                type=float,
-                               help='The interest rate monthly of the dept (default 0.0)',
-                               default=0.0)
+                               help='The monthly interest rate of the dept')
     parser_update.add_argument('--date',
                                type=str,
                                help='Date of start of this particualr debt in isoformat YYYY-MM-DD')
