@@ -4,13 +4,8 @@ from typing import Union, List, Tuple
 from orme.db.common import generate_sql_where_by_operator
 
 
-TABLE_NAME = 'expenses'
-
-
-get_table_columns_query = f'PRAGMA table_info({TABLE_NAME})'
-
-
-def generate_create_query(args: Namespace) -> Tuple[str]:
+# TODO: see if this abstraction is neccesary, create will be unique for every type of operation (debt, expense)
+def generate_create_query(args: Namespace, table_name: str, fields: List[str], values: str) -> Tuple[str]:
     today = date.today().isoformat()
     is_divided = 1 if args.div else 0
 
@@ -51,7 +46,7 @@ def generate_create_query(args: Namespace) -> Tuple[str]:
     return (create_expenses_table_query, insert_into_expenses_query)
 
 
-def generate_list_query(args: List[Tuple[str, Union[str | int]]]) -> Tuple[str]:
+def generate_list_query(args: List[Tuple[str, Union[str | int]]], table_name: str) -> Tuple[str]:
     offset = 0
     limit = 10
 
@@ -61,7 +56,7 @@ def generate_list_query(args: List[Tuple[str, Union[str | int]]]) -> Tuple[str]:
         where_statement = generate_sql_where_by_operator(args)
 
     query_results = f"""
-                    SELECT * FROM {TABLE_NAME}
+                    SELECT * FROM {table_name}
                     {where_statement}
                     ORDER BY date DESC
                     LIMIT {offset}, {limit}
@@ -69,30 +64,30 @@ def generate_list_query(args: List[Tuple[str, Union[str | int]]]) -> Tuple[str]:
 
     query_count = f"""
                    SELECT COUNT(*)
-                   FROM {TABLE_NAME}
+                   FROM {table_name}
                    {where_statement}
                    """
 
     return (query_results, query_count)
 
 
-def generate_update_query(args: List[Tuple[str, str | int]]) -> Tuple[str]:
+def generate_update_query(args: List[Tuple[str, str | int]], table_name: str) -> Tuple[str]:
     """ NOTE: for now we are not going to support updating for several registers, thus
     generate_sql_where_by_operator is not neccesary """
 
     today = date.today().isoformat()
 
     update_expense_table_query = f"""
-    UPDATE {TABLE_NAME}
+    UPDATE {table_name}
     SET {", ".join([" = ".join([str(item) for item in arg]) for arg in args[1:]])}, updated = {today}
     WHERE {"=".join([str(item) for item in args[0]])}"""
 
     return (update_expense_table_query)
 
 
-def generate_delete_query(args: List[Tuple[str, str | int]]) -> Tuple[str]:
+def generate_delete_query(args: List[Tuple[str, str | int]], table_name) -> Tuple[str]:
     delete_expense_query = f"""
-    DELETE FROM {TABLE_NAME}
+    DELETE FROM {table_name}
     WHERE {"=".join([str(item) for item in args[0]])}"""
 
     return (delete_expense_query)
