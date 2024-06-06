@@ -1,5 +1,5 @@
 from argparse import Namespace
-from datetime import date
+from datetime import date, timedelta
 from typing import Union, List, Tuple
 from orme.db.common import generate_sql_where_by_operator
 
@@ -91,3 +91,26 @@ def generate_delete_query(args: List[Tuple[str, str | int]], table_name) -> Tupl
     WHERE {"=".join([str(item) for item in args[0]])}"""
 
     return (delete_expense_query,)
+
+
+def generate_total_query(args: List[Tuple], table_name) -> Tuple[str]:
+    print(args)
+    match args:
+        case [('today', _)]:
+            day: str = date.today().isoformat()
+
+            total_expenses_value_query: str = f"""
+            SELECT SUM(value) FROM {table_name}
+            WHERE date = {day}"""
+
+            count_registers: str = f"""
+            SELECT COUNT(*)
+            FROM {table_name}
+            WHERE date = {day}"""
+
+            print(total_expenses_value_query)
+            return (total_expenses_value_query, count_registers)
+        case [('yesterday', _)]:
+            day: str = date.today() - timedelta(days=1)
+        case _:
+            print('i am not getting the pattern')

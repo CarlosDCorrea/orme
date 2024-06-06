@@ -1,7 +1,7 @@
 import sqlite3
 from typing import List
 
-from orme.db.operations import create, list_, update, delete
+from orme.db.operations import create, list_, update, delete, total
 from orme.settings import DATABASE_URL
 
 
@@ -13,12 +13,15 @@ def create_connection_and_execute_query(operation: str, queries: List[str], tabl
             create(cur, con, queries, table_name)
 
         if operation == 'list':
-            list_(cur, con, queries, table_name)
+            list_(cur, queries)
 
         if operation == 'update':
-            update(cur, con, queries, table_name)
+            update(cur, con, queries)
 
         if operation == 'delete':
-            delete(cur, con, queries, table_name)
+            delete(cur, con, queries)
+
+        if operation == 'total':
+            total(cur, queries)
 
     print('connection closed')

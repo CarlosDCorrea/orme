@@ -16,7 +16,7 @@ def create(cur: Cursor, con: Connection, queries: List[str], table_name: str) ->
     print(f'Register created in table {table_name} successfully')
 
 
-def list_(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
+def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
     query_results = queries[0]
     query_count = queries[1]
 
@@ -55,7 +55,7 @@ def list_(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> 
         cur.close()
 
 
-def update(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
+def update(cur: Cursor, con: Connection, queries: List[str]) -> None:
     update_query = queries[0]
     print(f'update query {update_query}')
     cur.execute(update_query)
@@ -65,7 +65,7 @@ def update(cur: Cursor, con: Connection, queries: List[str], table_name: str) ->
     print('Registro actualizado satisfactoriamente')
 
 
-def delete(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
+def delete(cur: Cursor, con: Connection, queries: List[str]) -> None:
     delete_query = queries[0]
 
     cur.execute(delete_query)
@@ -73,3 +73,20 @@ def delete(cur: Cursor, con: Connection, queries: List[str], table_name: str) ->
     cur.close()
 
     print('Registro eliminado satisfactoriamente')
+
+
+def total(cur: Cursor, queries: List[str]) -> None:
+    total_expenses_value_query: str = queries[0]
+    count_registers: str = queries[1]
+
+    cur.execute(total_expenses_value_query)
+    result: int | None = cur.fetchone()[0]
+
+    cur.execute(count_registers)
+    count: int = cur.fetchone()[0]
+
+    if count:
+        print(f'{count} expenses found for today with a total value of {result}')
+        return
+
+    print('No data found')
