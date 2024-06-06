@@ -22,13 +22,13 @@ def generate_sql_where_by_operator(args: List[Tuple[str, Union[str, int]]]) -> s
 
 def get_operator(arg: str) -> str | None:
     match arg:
-        case arg if arg.startswith('bt'):
+        case arg if arg.startswith('between'):
             return '><'
-        case arg if arg.startswith('gt'):
+        case arg if arg.startswith('greater'):
             return '>='
-        case arg if arg.startswith('lt'):
+        case arg if arg.startswith('less'):
             return '<='
-        case arg if arg.startswith('eq'):
+        case arg if arg.startswith('equal'):
             return '='
         case _:
             return None
@@ -42,3 +42,14 @@ def get_field_name(arg: str) -> str | None:
             return 'date'
         case _:
             return None
+
+
+def generate_sql_where_timeframe(timeframe: str | List[str]) -> str:
+    # Analize how is this going to work, for example, what would be the input
+    # when last year, current year, etc. Is given
+    where_statement = 'WHERE date '
+
+    if isinstance(timeframe, str):
+        where_statement += f'= {timeframe}'
+    else:
+        pass
