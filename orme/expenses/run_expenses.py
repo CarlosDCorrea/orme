@@ -11,10 +11,12 @@ from orme.settings import (QUERY_CREATE,
 from orme.db.queries.queries_expenses import generate_create_query
 from orme.db.queries.common_queries import (generate_list_query,
                                             generate_update_query,
-                                            generate_delete_query)
+                                            generate_delete_query,
+                                            generate_total_query)
 
 
 TABLE_NAME = 'expenses'
+QUERY_TOTAL = 5
 
 
 def define_query(query_type: int, args: Namespace) -> str:
@@ -23,7 +25,6 @@ def define_query(query_type: int, args: Namespace) -> str:
     queries: List[str] = []
 
     if query_type == QUERY_CREATE:
-        print(present_arguments)
         queries = generate_create_query(args)
     if query_type == QUERY_LIST:
         queries = generate_list_query(present_arguments, TABLE_NAME)
@@ -33,6 +34,8 @@ def define_query(query_type: int, args: Namespace) -> str:
         queries = generate_update_query(present_arguments, TABLE_NAME)
     if query_type == QUERY_DELETE:
         queries = generate_delete_query(present_arguments, TABLE_NAME)
+    if query_type == QUERY_TOTAL:
+        queries = generate_total_query(present_arguments, TABLE_NAME)
 
     return queries
 
@@ -53,3 +56,7 @@ def update_expense(args: Namespace) -> None:
 
 def delete_expense(args: Namespace) -> None:
     print(define_query(QUERY_DELETE))
+
+
+def total(args: Namespace) -> None:
+    create_connection_and_execute_query('total', define_query(QUERY_TOTAL, args), TABLE_NAME)
