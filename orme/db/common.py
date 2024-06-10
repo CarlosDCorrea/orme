@@ -1,7 +1,7 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 
-def generate_sql_where_by_operator(args: List[Tuple[str, Union[str, int]]]) -> str:
+def generate_sql_where_by_operator(args: List[Tuple[str, str | int]]) -> str:
     where_statement = 'WHERE '
     common_operators = ['<=', '>=', '=']
 
@@ -12,11 +12,15 @@ def generate_sql_where_by_operator(args: List[Tuple[str, Union[str, int]]]) -> s
         operator = get_operator(arg[0])
         field = get_field_name(arg[0])
 
-        values: Union[str, int, List[Union[str, int]]] = arg[1]
+        values: str | int | List[str | int] = arg[1]
         if operator in common_operators:
+            if isinstance(values, str):
+                values = f"'{values}'"
             where_statement += f'{field} {operator} {values}'
         elif operator == '><':
-            where_statement += f'{field} BETWEEN {values[0]} AND {values[1]}'
+            if isinstance(values[0], str):
+                values[0], values[1] = f"'{values[0]}'", f"'{values[1]}'"
+            where_statement += f"{field} BETWEEN {values[0]} AND {values[1]}"
     return where_statement
 
 
@@ -36,20 +40,9 @@ def get_operator(arg: str) -> str | None:
 
 def get_field_name(arg: str) -> str | None:
     match arg:
-        case arg if arg.endswith('v'):
+        case arg if arg.endswith('value'):
             return 'value'
-        case arg if arg.endswith('d'):
+        case arg if arg.endswith('date'):
             return 'date'
         case _:
             return None
-
-
-def generate_sql_where_timeframe(timeframe: str | List[str]) -> str:
-    # Analize how is this going to work, for example, what would be the input
-    # when last year, current year, etc. Is given
-    where_statement = 'WHERE date '
-
-    if isinstance(timeframe, str):
-        where_statement += f'= {timeframe}'
-    else:
-        pass

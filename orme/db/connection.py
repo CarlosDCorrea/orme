@@ -13,7 +13,7 @@ def create_connection_and_execute_query(operation: str, queries: List[str], tabl
             create(cur, con, queries, table_name)
 
         if operation == 'list':
-            list_(cur, queries)
+            list_(cur, queries, table_name)
 
         if operation == 'update':
             update(cur, con, queries)

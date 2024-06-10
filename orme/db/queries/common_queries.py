@@ -1,7 +1,9 @@
 from argparse import Namespace
-from datetime import date, timedelta
-from typing import Union, List, Tuple
+from datetime import date
+from typing import List, Tuple
+
 from orme.db.common import generate_sql_where_by_operator
+from orme.expenses.utils import generate_dateframe
 
 
 # TODO: see if this abstraction is neccesary, create will be unique for every type of operation (debt, expense)
@@ -46,7 +48,7 @@ def generate_create_query(args: Namespace, table_name: str, fields: List[str], v
     return (create_expenses_table_query, insert_into_expenses_query)
 
 
-def generate_list_query(args: List[Tuple[str, Union[str | int]]], table_name: str) -> Tuple[str]:
+def generate_list_query(args: List[Tuple[str, str | int]], table_name: str) -> Tuple[str]:
     offset = 0
     limit = 10
 
@@ -93,24 +95,17 @@ def generate_delete_query(args: List[Tuple[str, str | int]], table_name) -> Tupl
     return (delete_expense_query,)
 
 
-def generate_total_query(args: List[Tuple], table_name) -> Tuple[str]:
-    print(args)
-    match args:
-        case [('today', _)]:
-            day: str = date.today().isoformat()
+def generate_total_query(args: List[Tuple[str, str]], table_name) -> Tuple[str]:
+    local_args: List[Tuple[str, str | List[str]]] = generate_dateframe(args)
+    where_statement = generate_sql_where_by_operator(local_args)
 
-            total_expenses_value_query: str = f"""
-            SELECT SUM(value) FROM {table_name}
-            WHERE date = {day}"""
+    total_expenses_value_query: str = f"""
+    SELECT SUM(value) FROM {table_name}
+    {where_statement}"""
 
-            count_registers: str = f"""
-            SELECT COUNT(*)
-            FROM {table_name}
-            WHERE date = {day}"""
+    count_registers: str = f"""
+    SELECT COUNT(*)
+    FROM {table_name}
+    {where_statement}"""
 
-            print(total_expenses_value_query)
-            return (total_expenses_value_query, count_registers)
-        case [('yesterday', _)]:
-            day: str = date.today() - timedelta(days=1)
-        case _:
-            print('i am not getting the pattern')
+    return (total_expenses_value_query, count_registers)

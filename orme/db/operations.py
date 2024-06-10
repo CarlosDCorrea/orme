@@ -79,6 +79,8 @@ def total(cur: Cursor, queries: List[str]) -> None:
     total_expenses_value_query: str = queries[0]
     count_registers: str = queries[1]
 
+    print(total_expenses_value_query)
+    print(count_registers)
     cur.execute(total_expenses_value_query)
     result: int | None = cur.fetchone()[0]
 

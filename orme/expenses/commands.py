@@ -91,13 +91,13 @@ def run_list_expenses(subparsers: _SubParsersAction):
     mutually_exclusive_by_date.add_argument('-btd',
                                             '--between-date',
                                             nargs=2,
-                                            type=int,
+                                            type=str,
                                             metavar=('start-date', 'end-date'),
                                             action='extend',
                                             help='Filter by the dates provided (inclusive)')
     mutually_exclusive_by_date.add_argument('-eqd',
                                             '--equal-to-date',
-                                            type=int,
+                                            type=str,
                                             help="Filter by dates equals to this one")
     parser_list.add_argument('-caty',
                              '--category',
@@ -162,10 +162,9 @@ def run_delete_expense(subparsers: _SubParsersAction):
 def run_total(subparsers: _SubParsersAction):
     parser_total: ArgumentParser = subparsers.add_parser('total',
                                                          help='''Gets the count of all the expenses
-                                                                     in the time frame specified''')
+                                                                 in the time frame specified''')
 
-    mutually_exclusive_by_date: _ArgumentGroup = parser_total.add_mutually_exclusive_group(
-        required=True)
+    mutually_exclusive_by_date: _ArgumentGroup = parser_total.add_mutually_exclusive_group()
     mutually_exclusive_by_date.add_argument('--btd',
                                             '-between-date',
                                             type=str,
@@ -182,44 +181,37 @@ def run_total(subparsers: _SubParsersAction):
                                             help='Gets the total expenses value of yesterday',
                                             action='store_true',
                                             default=None)
-    mutually_exclusive_by_date.add_argument('--lw',
-                                            '-last-week',
+    mutually_exclusive_by_date.add_argument('-lw',
+                                            '--last-week',
                                             help='Get the total expenses value of the last week',
                                             action='store_true',
                                             default=None)
-    mutually_exclusive_by_date.add_argument('--cw',
-                                            '-current-week',
+    mutually_exclusive_by_date.add_argument('-cw',
+                                            '--current-week',
                                             help='''Gets the total expenses value of the current week
                                                     (e.g monday - current day of the week)''',
                                             action='store_true',
                                             default=None)
-    mutually_exclusive_by_date.add_argument('--lm',
-                                            '-last-month',
+    mutually_exclusive_by_date.add_argument('-lm',
+                                            '--last-month',
                                             help='Gets the total exxpenses value of the last month',
                                             action='store_true',
                                             default=None)
-    mutually_exclusive_by_date.add_argument('--cm',
-                                            '-current-month',
+    mutually_exclusive_by_date.add_argument('-cm',
+                                            '--current-month',
                                             help='''Gets the total expenses value of the current month
                                                     (e.g 1 - current day of the month)''',
                                             action='store_true',
                                             default=None)
-    mutually_exclusive_by_date.add_argument('--ly',
-                                            '-last-year',
+    mutually_exclusive_by_date.add_argument('-ly',
+                                            '--last-year',
                                             help='Gets the total expenses value of the last year',
                                             action='store_true',
                                             default=None)
-    mutually_exclusive_by_date.add_argument('--cy',
-                                            '-current-year',
+    mutually_exclusive_by_date.add_argument('-cy',
+                                            '--current-year',
                                             help='''Gets the total expenses value of the current year
                                                     (e.g 1 - current day of the year)''',
                                             action='store_true',
                                             default=None)
-    mutually_exclusive_by_date.add_argument('--un',
-                                            '-until-now',
-                                            help='''Gets the total expenses value of all time
-                                                    (e.g from the beginning - current day)''',
-                                            action='store_true',
-                                            default=None)
-
     parser_total.set_defaults(func=total)
