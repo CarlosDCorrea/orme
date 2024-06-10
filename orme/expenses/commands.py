@@ -214,4 +214,7 @@ def run_total(subparsers: _SubParsersAction):
                                                     (e.g 1 - current day of the year)''',
                                             action='store_true',
                                             default=None)
+    mutually_exclusive_by_date.add_argument('--date',
+                                            help="Get the total expenses value of the given date",
+                                            type=str)
     parser_total.set_defaults(func=total)

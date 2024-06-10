@@ -7,12 +7,16 @@ def generate_dateframe(args: List[Tuple[str, str]]) -> List[Tuple[str, str | Lis
     local_args: List[Tuple[str, str | List[str]]] = []
     dateframe: str | List[str] = ''
     SUNDAY = 6
+
     match args:
         case [('today', _)]:
             dateframe = date.today().isoformat()
             local_args = [('equal-to-date', dateframe)]
         case [('yesterday', _)]:
             dateframe = date.today() - timedelta(days=1)
+            local_args = [('equal-to-date', dateframe)]
+        case[('date', date_)]:
+            dateframe = date_
             local_args = [('equal-to-date', dateframe)]
         case [(arg, _)] if arg.startswith('last'):
             match arg:
@@ -66,6 +70,7 @@ def generate_dateframe(args: List[Tuple[str, str]]) -> List[Tuple[str, str | Lis
 
             local_args = [('between-date', dateframe)]
         case _:
-            print('nothing matches')
+            # A full query is perform
+            return []
 
     return local_args

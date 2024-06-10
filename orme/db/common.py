@@ -6,6 +6,7 @@ def generate_sql_where_by_operator(args: List[Tuple[str, str | int]]) -> str:
     common_operators = ['<=', '>=', '=']
 
     for arg in args:
+        print(arg)
         if where_statement != 'WHERE ':
             where_statement += 'AND'
 

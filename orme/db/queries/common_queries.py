@@ -97,7 +97,10 @@ def generate_delete_query(args: List[Tuple[str, str | int]], table_name) -> Tupl
 
 def generate_total_query(args: List[Tuple[str, str]], table_name) -> Tuple[str]:
     local_args: List[Tuple[str, str | List[str]]] = generate_dateframe(args)
-    where_statement = generate_sql_where_by_operator(local_args)
+    where_statement: str = ''
+
+    if local_args:
+        where_statement = generate_sql_where_by_operator(local_args)
 
     total_expenses_value_query: str = f"""
     SELECT SUM(value) FROM {table_name}

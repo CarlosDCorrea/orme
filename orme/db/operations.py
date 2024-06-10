@@ -79,8 +79,8 @@ def total(cur: Cursor, queries: List[str]) -> None:
     total_expenses_value_query: str = queries[0]
     count_registers: str = queries[1]
 
-    print(total_expenses_value_query)
-    print(count_registers)
+    # print(total_expenses_value_query)
+    # print(count_registers)
     cur.execute(total_expenses_value_query)
     result: int | None = cur.fetchone()[0]
 
@@ -88,7 +88,7 @@ def total(cur: Cursor, queries: List[str]) -> None:
     count: int = cur.fetchone()[0]
 
     if count:
-        print(f'{count} expenses found for today with a total value of {result}')
+        print(f'{count} expenses found with a total value of {result}')
         return
 
     print('No data found')
