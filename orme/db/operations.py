@@ -70,9 +70,13 @@ def delete(cur: Cursor, con: Connection, queries: List[str]) -> None:
 
     cur.execute(delete_query)
     con.commit()
-    cur.close()
 
-    print('Registro eliminado satisfactoriamente')
+    if cur.rowcount > 0:
+        print('Register deleted')
+    else:
+        print('No registers found to delete')
+
+    cur.close()
 
 
 def total(cur: Cursor, queries: List[str]) -> None:

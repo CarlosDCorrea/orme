@@ -41,13 +41,11 @@ def define_query(query_type: int, args: Namespace) -> str:
 
 
 def create_expense(args: Namespace):
-    create_connection_and_execute_query(
-        'create', define_query(QUERY_CREATE, args), TABLE_NAME)
+    create_connection_and_execute_query('create', define_query(QUERY_CREATE, args), TABLE_NAME)
 
 
 def list_expenses(args: Namespace):
-    create_connection_and_execute_query(
-        'list', define_query(QUERY_LIST, args), TABLE_NAME)
+    create_connection_and_execute_query('list', define_query(QUERY_LIST, args), TABLE_NAME)
 
 
 def update_expense(args: Namespace) -> None:
@@ -55,9 +53,8 @@ def update_expense(args: Namespace) -> None:
 
 
 def delete_expense(args: Namespace) -> None:
-    print(define_query(QUERY_DELETE))
+    create_connection_and_execute_query('delete', define_query(QUERY_DELETE, args), TABLE_NAME)
 
 
 def total(args: Namespace) -> None:
-    print(args)
-    # create_connection_and_execute_query('total', define_query(QUERY_TOTAL, args), TABLE_NAME)
+    create_connection_and_execute_query('total', define_query(QUERY_TOTAL, args), TABLE_NAME)

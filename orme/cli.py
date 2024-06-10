@@ -64,5 +64,4 @@ def main():
     run_options(subparsers_options)
 
     args = parser.parse_args()
-    print(f'These are the args: {args}')
     args.func(args)
