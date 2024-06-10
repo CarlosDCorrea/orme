@@ -5,6 +5,8 @@ from .run_debt import (create_debt,
                        update_debt,
                        delete_debt)
 
+from ..validations import validate_date
+
 
 def run_create_debt(subparsers):
     parser_add = subparsers.add_parser('add',
@@ -35,7 +37,7 @@ def run_create_debt(subparsers):
                             help='The interest rate monthly of the dept default 0.0',
                             default=0.00)
     parser_add.add_argument('--date',
-                            type=str,
+                            type=validate_date,
                             help="""
                             Date of start of this particualr debt in isoformat YYYY-MM-DD
                             (not the register date but the execute one)
@@ -74,21 +76,21 @@ def run_list_debts(subparsers):
                                              action='extend')
     mutually_exclusive_by_date.add_argument('-gtd',
                                             '--greater-than-date',
-                                            type=str,
+                                            type=validate_date,
                                             help='Filter by dates greater than this one (inclusive)')
     mutually_exclusive_by_date.add_argument('-ltd',
                                             '--lower-than-date',
-                                            type=str,
+                                            type=validate_date,
                                             help='Filter by dates lower than this one (inclusive)')
     mutually_exclusive_by_date.add_argument('-eqd',
                                             '--equal-to-date',
-                                            type=str,
+                                            type=validate_date,
                                             help='Filter by dates equal to this one')
     mutually_exclusive_by_date.add_argument('-btd',
                                             '--between-dates',
                                             nargs=2,
                                             metavar=('date-start', 'date-end'),
-                                            type=str,
+                                            type=validate_date,
                                             help='Filter by dates between the dates provided (inclusive)',
                                             action='extend')
 
@@ -128,7 +130,7 @@ def run_update_debt(subparsers):
                                help='The interest rate monthly of the dept (default 0.0)',
                                default=0.0)
     parser_update.add_argument('--date',
-                               type=str,
+                               type=validate_date,
                                help='Date of start of this particualr debt in isoformat YYYY-MM-DD')
 
     parser_update.set_defaults(func=update_debt)

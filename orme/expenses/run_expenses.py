@@ -59,4 +59,5 @@ def delete_expense(args: Namespace) -> None:
 
 
 def total(args: Namespace) -> None:
-    create_connection_and_execute_query('total', define_query(QUERY_TOTAL, args), TABLE_NAME)
+    print(args)
+    # create_connection_and_execute_query('total', define_query(QUERY_TOTAL, args), TABLE_NAME)

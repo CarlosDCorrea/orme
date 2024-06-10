@@ -8,6 +8,8 @@ from .run_expenses import (create_expense,
 
 from orme.constants import CATEGORIES, USERS
 
+from orme.validations import validate_date
+
 
 def run_create_expense(subparsers: _SubParsersAction):
     # TODO Try with a new register type user where dividing arguments in groups is neccesary
@@ -38,7 +40,7 @@ def run_create_expense(subparsers: _SubParsersAction):
                             choices=USERS,
                             default=USERS[0])
     parser_add.add_argument('--date',
-                            type=str,
+                            type=validate_date,
                             help="""
                             The date when this expense ocurred in isoformat YYYY-MM-DD
                             (not the register date but the execute one)
@@ -82,22 +84,22 @@ def run_list_expenses(subparsers: _SubParsersAction):
                                              help="Filter by values equals to this one")
     mutually_exclusive_by_date.add_argument('-gtd',
                                             '--greater-than-date',
-                                            type=str,
+                                            type=validate_date,
                                             help='Filter by dates greater than this one')
     mutually_exclusive_by_date.add_argument('-ltd',
                                             '--less-than-date',
-                                            type=str,
+                                            type=validate_date,
                                             help='Filter by dates less than this one')
     mutually_exclusive_by_date.add_argument('-btd',
                                             '--between-date',
                                             nargs=2,
-                                            type=str,
+                                            type=validate_date,
                                             metavar=('start-date', 'end-date'),
                                             action='extend',
                                             help='Filter by the dates provided (inclusive)')
     mutually_exclusive_by_date.add_argument('-eqd',
                                             '--equal-to-date',
-                                            type=str,
+                                            type=validate_date,
                                             help="Filter by dates equals to this one")
     parser_list.add_argument('-caty',
                              '--category',
@@ -139,7 +141,7 @@ def run_update_expenses(subparsers: _SubParsersAction):
                                choices=USERS,
                                help='Name of the user that generate the expense (default: Carlos)')
     parser_update.add_argument('--date',
-                               type=str,
+                               type=validate_date,
                                help="The date when this expense ocurred in isoformat YYYY-MM-DD")
     # TODO: Think about what to do with this field
     """ parser_update.add_argument('--div',
@@ -165,9 +167,8 @@ def run_total(subparsers: _SubParsersAction):
                                                                  in the time frame specified''')
 
     mutually_exclusive_by_date: _ArgumentGroup = parser_total.add_mutually_exclusive_group()
-    mutually_exclusive_by_date.add_argument('--btd',
-                                            '-between-date',
-                                            type=str,
+    mutually_exclusive_by_date.add_argument('--between-date',
+                                            type=validate_date,
                                             nargs=2,
                                             metavar=('start-date',
                                                      'end-date'),
@@ -216,5 +217,5 @@ def run_total(subparsers: _SubParsersAction):
                                             default=None)
     mutually_exclusive_by_date.add_argument('--date',
                                             help="Get the total expenses value of the given date",
-                                            type=str)
+                                            type=validate_date)
     parser_total.set_defaults(func=total)
