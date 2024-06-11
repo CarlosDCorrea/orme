@@ -4,7 +4,6 @@ jobs:
   build:
     name: Build distribution
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -16,6 +15,8 @@ jobs:
         python3 -m
         pip install build
         --user
+    - name: Clean Up dist directory
+      run: rm dist/orme-*
     - name: Build a binary wheel and a source tarball
       run: python3 -m build
     - name: Store the distribution packages
@@ -32,10 +33,8 @@ jobs:
     environment:
       name: develop
       url: https://test.pypi.org/p/orme
-
     permissions:
       id-token: write
-
     steps:
       - name: Download all the dists
         uses: actions/download-artifact@v3
