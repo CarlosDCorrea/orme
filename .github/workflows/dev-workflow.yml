@@ -15,10 +15,10 @@ jobs:
         python3 -m
         pip install build
         --user
-    - name: Clean Up dist directory
-      run: rm dist/orme-*
     - name: Build a binary wheel and a source tarball
-      run: python3 -m build
+      run: >-
+        python3 -m build
+        ls dist
     - name: Store the distribution packages
       uses: actions/upload-artifact@v3
       with:
