@@ -21,31 +21,47 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
     query_count = queries[1]
 
     get_table_columns_query = f'PRAGMA table_info({table_name})'
-
+    offset, limit = 0, 10
     try:
-        cur.execute(get_table_columns_query)
+        cur.execute(get_table_columns_query, ())
         columns: List[Tuple[Union[int, str]]] = cur.fetchall()
 
-        # TODO: use pandas sql reader instead of cur to retrieve the rows
-        # get the requested data
-        cur.execute(query_results)
-        results: List[Tuple[Union[str, int]]] = cur.fetchall()
-
-        # get the count of the table's rows
         cur.execute(query_count)
         count: int = cur.fetchone()[0]
+        remaining: int = count - limit
 
         print(
             f'number of register for this query in table {table_name} {count}')
 
-        data = DataFrame.from_records(data=results,
-                                      columns=[column[1] for column in columns])
+        while True:
+            # TODO: use pandas sql reader instead of cur to retrieve the rows
+            # get the requested data
+            cur.execute(query_results, (offset, limit))
+            results: List[Tuple[Union[str, int]]] = cur.fetchall()
 
-        if data.empty:
-            print('Nothing to show')
-            return
+            df = DataFrame.from_records(data=results,
+                                        columns=[column[1] for column in columns])
 
-        print(data)
+            if df.empty and not offset:
+                print('Nothing to show')
+                return
+            elif df.empty:
+                print('Nothing more to show')
+                return
+            print(df)
+
+            while True:
+                user_input = input(f'({remaining}):')
+
+                if user_input == 'q':
+                    return
+                elif user_input == '':
+                    break
+                else:
+                    continue
+
+            offset, limit = limit, limit + 10 if limit + 10 < count else count
+            remaining = count - limit
 
     except sqlite3.OperationalError as e:
         error = f'We can\'t perform this action because the table {table_name} does not exists'

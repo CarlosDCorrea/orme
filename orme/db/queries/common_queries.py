@@ -5,10 +5,7 @@ from orme.db.common import generate_sql_where_by_operator
 from orme.expenses.utils import generate_dateframe
 
 
-def generate_list_query(args: List[Tuple[str, str | int]], table_name: str) -> Tuple[str]:
-    offset = 0
-    limit = 10
-
+def generate_list_query(args: List[Tuple[str, str | int]], table_name: str) -> Tuple[str, str]:
     where_statement: str = ''
 
     if args:
@@ -18,7 +15,7 @@ def generate_list_query(args: List[Tuple[str, str | int]], table_name: str) -> T
                     SELECT * FROM {table_name}
                     {where_statement}
                     ORDER BY date DESC
-                    LIMIT {offset}, {limit}
+                    LIMIT ?, ?
                     """
 
     query_count = f"""
