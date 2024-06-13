@@ -47,10 +47,10 @@ def generate_dateframe(args: List[Tuple[str, str]]) -> List[Tuple[str, str | Lis
         case [(arg, _)] if arg.startswith('current'):
             match arg:
                 case arg if arg.endswith('week'):
-                    current_week_start_date = date.today() - timedelta(days=date.today().weekday())
-                    current_week_last_date = date.today() + timedelta(days=(SUNDAY - date.today().weekday()))
+                    current_week_start_date: date = date.today() - timedelta(days=date.today().weekday())
+                    current_week_last_date: date = date.today() + timedelta(days=(SUNDAY - date.today().weekday()))
 
-                    dateframe = [current_week_start_date, current_week_last_date]
+                    dateframe = [current_week_start_date.isoformat(), current_week_last_date.isoformat()]
                 case arg if arg.endswith('month'):
                     current_month: int = date.today().month
                     current_year: int = date.today().year
