@@ -36,7 +36,7 @@ def generate_dateframe(args: List[Tuple[str, str]]) -> List[Tuple[str, str | Lis
 
                     dateframe = [last_month_start_date, last_month_last_date]
                 case arg if arg.endswith('year'):
-                    last_year: int = date.today().year
+                    last_year: int = date.today().year - 1
 
                     last_year_start_date: str = date(last_year, 1, 1).isoformat()
                     last_year_last_date: str = date(last_year, 12, 31).isoformat()
