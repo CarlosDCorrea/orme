@@ -106,7 +106,6 @@ def run_update_debt(subparsers):
                                type=str,
                                help='The id of the debt to be updated',
                                required=True)
-
     parser_update.add_argument('-v',
                                '--value',
                                type=int,
@@ -127,8 +126,7 @@ def run_update_debt(subparsers):
     parser_update.add_argument('-ir',
                                '--interest-rate',
                                type=float,
-                               help='The interest rate monthly of the dept (default 0.0)',
-                               default=0.0)
+                               help='The interest rate monthly of the dept')
     parser_update.add_argument('--date',
                                type=validate_date,
                                help='Date of start of this particualr debt in isoformat YYYY-MM-DD')

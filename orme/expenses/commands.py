@@ -12,7 +12,6 @@ from orme.validations import validate_date
 
 
 def run_create_expense(subparsers: _SubParsersAction):
-    # TODO Try with a new register type user where dividing arguments in groups is neccesary
     parser_add = subparsers.add_parser('add',
                                        help='adds a new expense with all its attributes',
                                        allow_abbrev=False)
@@ -143,10 +142,11 @@ def run_update_expenses(subparsers: _SubParsersAction):
     parser_update.add_argument('--date',
                                type=validate_date,
                                help="The date when this expense ocurred in isoformat YYYY-MM-DD")
-    # TODO: Think about what to do with this field
-    """ parser_update.add_argument('--div',
-                                       help='Whether this expense should be divided by 2 for calculation purposes',
-                                       action='store_true') """
+    parser_update.add_argument('--div',
+                               help='Whether this expense should be divided for calculation purposes (0:False, 1:True)',
+                               type=int,
+                               choices=[0, 1],
+                               dest='is_divided',)
     parser_update.set_defaults(func=update_expense)
 
 

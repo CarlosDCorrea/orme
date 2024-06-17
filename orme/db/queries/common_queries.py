@@ -32,7 +32,10 @@ def generate_update_query(args: List[Tuple[str, str | int]], table_name: str) ->
 
     update_table_query = f"""
     UPDATE {table_name}
-    SET {", ".join([" = ".join([f"'{item}'" for item in arg]) for arg in args[1:]])}, updated = '{today}'
+    SET {", ".join(
+        [" = ".join(
+            [f"'{item}'" for item in arg])
+                         for arg in args[1:]])}, updated = '{today}'
     WHERE {" = ".join([str(item) for item in args[0]])}"""
 
     return (update_table_query,)

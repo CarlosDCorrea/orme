@@ -40,7 +40,7 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
             f'number of register for this query in table {table_name} {count}')
 
         while True:
-            print('starting with offset {} and limit {} and remaining {}'.format(offset, limit, remaining))
+            # print('starting with offset {} and limit {} and remaining {}'.format(offset, limit, remaining))
             # TODO: use pandas sql reader instead of cur to retrieve the rows
             # get the requested data
             cur.execute(query_results, (offset, limit))
@@ -55,6 +55,7 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
             elif df.empty:
                 print('Nothing more to show')
                 return
+
             print(df)
 
             while True:
@@ -71,7 +72,7 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
 
             offset, limit = offset + limit, remaining if remaining < limit else limit
             remaining -= limit
-            print('finishing with offset {} and limit {} and remaining {}'.format(offset, limit, remaining))
+            # print('finishing with offset {} and limit {} and remaining {}'.format(offset, limit, remaining))
 
     except sqlite3.OperationalError as e:
         error = f'We can\'t perform this action because the table {table_name} does not exists'
@@ -83,12 +84,15 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
 
 def update(cur: Cursor, con: Connection, queries: List[str]) -> None:
     update_query = queries[0]
-    print(f'update query {update_query}')
     cur.execute(update_query)
     con.commit()
-    cur.close()
 
-    print('Registro actualizado satisfactoriamente')
+    if cur.rowcount:
+        print('Registro actualizado satisfactoriamente')
+    else:
+        print('No register found with the specified id')
+
+    cur.close()
 
 
 def delete(cur: Cursor, con: Connection, queries: List[str]) -> None:
