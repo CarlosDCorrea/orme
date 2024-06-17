@@ -21,19 +21,26 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
     query_count = queries[1]
 
     get_table_columns_query = f'PRAGMA table_info({table_name})'
-    offset, limit = 0, 10
+    offset: int = 0
     try:
         cur.execute(get_table_columns_query, ())
         columns: List[Tuple[Union[int, str]]] = cur.fetchall()
 
         cur.execute(query_count)
         count: int = cur.fetchone()[0]
-        remaining: int = count - limit
+
+        if not count:
+            print('No data found')
+            return
+
+        limit: int = 10 if count > 10 else count
+        remaining: int = 0 if not (count - limit) else count - limit
 
         print(
             f'number of register for this query in table {table_name} {count}')
 
         while True:
+            print('starting with offset {} and limit {} and remaining {}'.format(offset, limit, remaining))
             # TODO: use pandas sql reader instead of cur to retrieve the rows
             # get the requested data
             cur.execute(query_results, (offset, limit))
@@ -51,8 +58,10 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
             print(df)
 
             while True:
-                user_input = input(f'({remaining}):')
-
+                try:
+                    user_input = input(f'({remaining}):')
+                except KeyboardInterrupt:
+                    return
                 if user_input == 'q':
                     return
                 elif user_input == '':
@@ -60,8 +69,9 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
                 else:
                     continue
 
-            offset, limit = limit, limit + 10 if limit + 10 < count else count
-            remaining = count - limit
+            offset, limit = offset + limit, remaining if remaining < limit else limit
+            remaining -= limit
+            print('finishing with offset {} and limit {} and remaining {}'.format(offset, limit, remaining))
 
     except sqlite3.OperationalError as e:
         error = f'We can\'t perform this action because the table {table_name} does not exists'
