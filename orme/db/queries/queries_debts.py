@@ -16,7 +16,7 @@ def generate_create_query(args: Namespace) -> Tuple[str, str]:
         deptor TEXT,
         lender TEXT,
         description TEXT,
-        interest_rate INTEGER NOT NULL,
+        interest_rate REAL NOT NULL,
         date TEXT,
         created TEXT,
         updated TEXT
