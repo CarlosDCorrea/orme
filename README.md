@@ -4,7 +4,7 @@
 
 ## Description
 
-Orme is a command-line interface (CLI) application that is in its early stages of development, it is intended to keep track of personal expenses and debts, in order to be able to have insights about personal financial situation such as, how much is the user expending in different time frames (weeks, months, years), what are the things in which the user expends more its money (food, bills, clothes, etc), as well as what debts the user has, or which of them the user is actually the lender.
+Orme is a command-line interface (CLI) application and its in early stages of development, it is intended to keep track of personal expenses and debts, in order to be able to have insights about personal financial situation such as, how much is the user expending in different time frames (weeks, months, years), what are the things in which the user expends more its money (food, bills, clothes, etc), as well as what debts the user has, or which of them the user is actually the lender.
 
 Orme is currently changing and the objective is to add graphical information through several charts which help the user have a better view of all the information related to expenses, debts and investments.
 
