@@ -32,9 +32,9 @@ Orme is currently changing and the objective is to add graphical information thr
 2. Install the app directly from TestPyPI:
 
     ```sh
-    pip install --extra-index-url https://testpypi.python.org/pypi orme=={version} # Current tested version 0.1.2.10
+    pip install --extra-index-url https://testpypi.python.org/pypi orme=={version} # Current tested version 0.1.2.11
     ```
-
+..
 ## Usage
 
 Orme has 2 types of registers to be added and both of them have different arguments and options, you can always use the --help option to get information for each command.

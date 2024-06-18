@@ -6,7 +6,7 @@ from .run_expenses import (create_expense,
                            delete_expense,
                            total)
 
-from orme.constants import CATEGORIES, USERS
+from orme.constants import CATEGORIES
 
 from orme.validations import validate_date
 
@@ -25,7 +25,6 @@ def run_create_expense(subparsers: _SubParsersAction):
                             '--description',
                             type=str,
                             help='The description of this particular expense [optional]')
-    # For future versions categories and users should be data from the database
     parser_add.add_argument('-caty',
                             '--category',
                             type=str,
@@ -35,9 +34,7 @@ def run_create_expense(subparsers: _SubParsersAction):
     parser_add.add_argument('-u',
                             '--user',
                             type=str,
-                            help='Name of the user that generate the expense (default: Carlos)',
-                            choices=USERS,
-                            default=USERS[0])
+                            help='Name of the user that generate the expense (default: Carlos)')
     parser_add.add_argument('--date',
                             type=validate_date,
                             help="""
@@ -128,17 +125,15 @@ def run_update_expenses(subparsers: _SubParsersAction):
                                '--description',
                                type=str,
                                help='The description of this particular expense [optional]')
-    # For future versions categories and users should be data from the database
     parser_update.add_argument('-caty',
                                '--category',
                                type=str,
                                choices=CATEGORIES,
-                               help='The category of the expense (default: food)')
+                               help='The category of the expense')
     parser_update.add_argument('-u',
                                '--user',
                                type=str,
-                               choices=USERS,
-                               help='Name of the user that generate the expense (default: Carlos)')
+                               help='Name of the user that generate the expense')
     parser_update.add_argument('--date',
                                type=validate_date,
                                help="The date when this expense ocurred in isoformat YYYY-MM-DD")
@@ -146,7 +141,7 @@ def run_update_expenses(subparsers: _SubParsersAction):
                                help='Whether this expense should be divided for calculation purposes (0:False, 1:True)',
                                type=int,
                                choices=[0, 1],
-                               dest='is_divided',)
+                               dest='is_divided')
     parser_update.set_defaults(func=update_expense)
 
 
