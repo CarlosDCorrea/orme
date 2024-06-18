@@ -1,10 +1,14 @@
-name: Publish Orme to TestPyPI
+name: Publish Orme to PyPI
 on: 
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - develop
+      - master
+
 jobs:
-  build:
+  bulid:
+    if: github.event.pull_request.merge == true
     name: Build distribution
     runs-on: ubuntu-latest
     steps:
@@ -27,13 +31,13 @@ jobs:
         path: dist/
   develop:
     name: >-
-      Publish Orme to test pypi
+      Publish Orme to PyPI
     needs:
     - build
     runs-on: ubuntu-latest
     environment:
-      name: develop
-      url: https://test.pypi.org/p/orme
+      name: prod
+      url: https://pypi.org/p/orme
     permissions:
       id-token: write
     steps:
@@ -44,5 +48,3 @@ jobs:
           path: dist/
       - name: Publish distribution to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
