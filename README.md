@@ -12,10 +12,6 @@ Orme is currently changing and the objective is to add graphical information thr
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Commands](#commands)
-- [Examples](#examples)
-- [Contributing](#contributing)
-- [License](#license)
 - [Contact](#contact)
 
 ## Installation
@@ -228,3 +224,13 @@ orme expenses update --id {your_expense_id} --{field_to_update} {new_value} #(va
 ```sh
 orme expenses delete --id {your_expense_id}
 ```
+
+## Contact
+
+Feel free to contact me if you have some suggestions or feedback
+
+### Email
+ - carlosdcorrea3@gmail.com
+
+### Linkedin
+ - https://www.linkedin.com/in/carlos-correa-1ba7861b8/
