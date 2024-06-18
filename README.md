@@ -32,7 +32,7 @@ Orme is currently changing and the objective is to add graphical information thr
 2. Install the app directly from TestPyPI:
 
     ```sh
-    pip install --extra-index-url https://testpypi.python.org/pypi orme=={version} # Current tested version 0.1.2.12
+    pip install --extra-index-url https://testpypi.python.org/pypi orme=={version} # Current tested version 0.1.2.13
     ```
 ..
 ## Usage
