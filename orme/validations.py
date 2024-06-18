@@ -1,9 +1,9 @@
 from datetime import date
 
 
-def validate_date(str_date: str) -> None:
+def validate_date(str_date: str) -> str:
     try:
-        date.fromisoformat(str_date)
+        return date.fromisoformat(str_date).isoformat()
     except ValueError as e:
         print(f"error while validating date {e}")
         exit(1)

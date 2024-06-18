@@ -27,6 +27,8 @@ def define_query(query_type: int, args: Namespace) -> str:
     if query_type == QUERY_LIST:
         queries = generate_list_query(present_arguments, TABLE_NAME)
     if query_type == QUERY_UPDATE:
+        if len(present_arguments) == 1:
+            raise ValueError('This command requires the fields to be updated')
         queries = generate_update_query(present_arguments, TABLE_NAME)
     if query_type == QUERY_DELETE:
         queries = generate_delete_query(present_arguments, TABLE_NAME)
@@ -34,7 +36,7 @@ def define_query(query_type: int, args: Namespace) -> str:
     return queries
 
 
-def create_debt(args):
+def create_debt(args: Namespace) -> None:
     create_connection_and_execute_query(
         'create', define_query(QUERY_CREATE, args), TABLE_NAME)
 
@@ -45,8 +47,11 @@ def list_debts(args: Namespace) -> None:
 
 
 def update_debt(args: Namespace) -> None:
-    create_connection_and_execute_query(
-        'update', define_query(QUERY_UPDATE, args), 'debts')
+    try:
+        create_connection_and_execute_query(
+            'update', define_query(QUERY_UPDATE, args), 'debts')
+    except ValueError as e:
+        print(e)
 
 
 def delete_debt(args: Namespace) -> None:

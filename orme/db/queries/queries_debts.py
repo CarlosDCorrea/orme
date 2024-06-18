@@ -6,7 +6,7 @@ from typing import Tuple
 TABLE_NAME = 'debts'
 
 
-def generate_create_query(args: Namespace) -> Tuple[str]:
+def generate_create_query(args: Namespace) -> Tuple[str, str]:
     today: str = date.today().isoformat()
 
     create_debts_table_query: str = f"""

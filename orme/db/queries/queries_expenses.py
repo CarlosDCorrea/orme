@@ -6,12 +6,12 @@ from typing import Tuple
 TABLE_NAME = 'expenses'
 
 
-def generate_create_query(args: Namespace) -> Tuple[str]:
+def generate_create_query(args: Namespace) -> Tuple[str, str]:
     today = date.today().isoformat()
     is_divided = 1 if args.div else 0
 
-    create_expenses_table_query = """
-    CREATE TABLE if not exists expenses(
+    create_expenses_table_query = f"""
+    CREATE TABLE if not exists {TABLE_NAME}(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         value INTEGER NOT NULL,
         user TEXT NOT NULL,
@@ -25,7 +25,7 @@ def generate_create_query(args: Namespace) -> Tuple[str]:
     """
 
     insert_into_expenses_query = f"""
-    INSERT INTO expenses(
+    INSERT INTO {TABLE_NAME}(
         value,
         user,
         category,
