@@ -1,9 +1,10 @@
 name: Publish Orme to PyPI
 on: 
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - master
-
 jobs:
   build:
     name: Build distribution
@@ -43,5 +44,5 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
-      - name: Publish distribution to TestPyPI
+      - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
