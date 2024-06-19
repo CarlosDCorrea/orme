@@ -7,6 +7,7 @@ on:
       - master
 jobs:
   build:
+    if: github.event.pull_request.merged == true
     name: Build distribution
     runs-on: ubuntu-latest
     steps:
