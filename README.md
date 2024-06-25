@@ -29,10 +29,10 @@ Orme is currently changing and the objective is to add graphical information thr
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
     ```
 
-2. Install the app directly from TestPyPI:
+2. Install the app directly from PyPI:
 
     ```sh
-    pip install --extra-index-url https://testpypi.python.org/pypi orme=={version} # Current tested version 0.1.2.13
+    pip install orme
     ```
 ..
 ## Usage
