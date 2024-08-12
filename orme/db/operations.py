@@ -57,7 +57,11 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
                 print('Nothing more to show')
                 return
 
-            print(df)
+            if offset:
+                print('\033[A\033[K', end='\n')
+                print(df[:offset].to_string(index=False))
+            else:
+                print(df.to_string(index=False))
 
             while True:
                 try:
