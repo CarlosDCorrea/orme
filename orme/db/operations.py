@@ -1,8 +1,9 @@
 import sqlite3
+import shutil
 from sqlite3 import Cursor, Connection
 from typing import List, Tuple, Union
 
-from pandas import DataFrame
+import pandas as pd
 
 
 def create(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
@@ -26,6 +27,11 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
     try:
         cur.execute(get_table_columns_query, ())
         columns: List[Tuple[Union[int, str]]] = cur.fetchall()
+        n_cols: int = len([column[1] for column in columns])
+
+        # Some value of the last column could be out of bound, ending up in an overflow to the line below
+        # thats why the substraction of - 1 for each column
+        col_size: int = (shutil.get_terminal_size().columns // n_cols) - 1
 
         cur.execute(query_count)
         count: int = cur.fetchone()[0]
@@ -47,8 +53,8 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
             cur.execute(query_results, (offset, limit))
             results: List[Tuple[Union[str, int]]] = cur.fetchall()
 
-            df = DataFrame.from_records(data=results,
-                                        columns=[column[1] for column in columns])
+            df = pd.DataFrame.from_records(data=results,
+                                           columns=[column[1] for column in columns])
 
             if df.empty and not offset:
                 print('Nothing to show')
@@ -59,9 +65,14 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
 
             if offset:
                 print('\033[A\033[K', end='\n')
-                print(df[:offset].to_string(index=False))
+                print(df[:offset].to_string(index=False,
+                                            header=False,
+                                            max_colwidth=col_size,
+                                            col_space=col_size))
             else:
-                print(df.to_string(index=False))
+                print(df.to_string(index=False,
+                                   max_colwidth=col_size,
+                                   col_space=col_size))
 
             while True:
                 try:
