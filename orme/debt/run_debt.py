@@ -57,3 +57,7 @@ def update_debt(args: Namespace) -> None:
 def delete_debt(args: Namespace) -> None:
     create_connection_and_execute_query(
         'delete', define_query(QUERY_DELETE, args), 'debts')
+
+
+def proyection(args: Namespace) -> None:
+    pass
