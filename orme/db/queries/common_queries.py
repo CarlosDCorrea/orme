@@ -42,11 +42,11 @@ def generate_update_query(args: List[Tuple[str, str | int]], table_name: str) ->
 
 
 def generate_delete_query(args: List[Tuple[str, str | int]], table_name) -> Tuple[str]:
-    delete_expense_query = f"""
+    delete_query = f"""
     DELETE FROM {table_name}
     WHERE {"=".join([item for item in args[0]])}"""
 
-    return (delete_expense_query,)
+    return (delete_query,)
 
 
 def generate_total_query(args: List[Tuple[str, str]], table_name) -> Tuple[str]:
@@ -56,7 +56,7 @@ def generate_total_query(args: List[Tuple[str, str]], table_name) -> Tuple[str]:
     if local_args:
         where_statement = generate_sql_where_by_operator(local_args)
 
-    total_expenses_value_query: str = f"""
+    total_value_query: str = f"""
     SELECT SUM(value) FROM {table_name}
     {where_statement}"""
 
@@ -65,4 +65,17 @@ def generate_total_query(args: List[Tuple[str, str]], table_name) -> Tuple[str]:
     FROM {table_name}
     {where_statement}"""
 
-    return (total_expenses_value_query, count_registers)
+    return (total_value_query, count_registers)
+
+
+def generate_get_query(args: List[Tuple[str, str]], table_name) -> Tuple[str]:
+    field: str = args[0][0]
+    debt_id: int = args[0][1]
+
+    where_statement = f'WHERE {field} == {debt_id}'
+    get_query: str = f"""
+    SELECT * FROM {table_name}
+    {where_statement}"""
+
+    print(where_statement)
+    print(get_query)
