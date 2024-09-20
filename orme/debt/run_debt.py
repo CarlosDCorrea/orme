@@ -6,12 +6,14 @@ from orme.utils import get_present_arguments
 from orme.db.queries.queries_debts import generate_create_query
 from orme.db.queries.common_queries import (generate_list_query,
                                             generate_update_query,
-                                            generate_delete_query)
+                                            generate_delete_query,
+                                            generate_get_query)
 from orme.db.connection import create_connection_and_execute_query
 from orme.settings import (QUERY_CREATE,
                            QUERY_LIST,
                            QUERY_UPDATE,
-                           QUERY_DELETE)
+                           QUERY_DELETE,
+                           QUERY_GET)
 
 
 TABLE_NAME = 'debts'
@@ -32,6 +34,10 @@ def define_query(query_type: int, args: Namespace) -> str:
         queries = generate_update_query(present_arguments, TABLE_NAME)
     if query_type == QUERY_DELETE:
         queries = generate_delete_query(present_arguments, TABLE_NAME)
+    if query_type == QUERY_GET:
+        if len(present_arguments) > 1:
+            raise ValueError('This command only requires an id')
+        queries = generate_get_query(present_arguments, TABLE_NAME)
 
     return queries
 
@@ -59,5 +65,15 @@ def delete_debt(args: Namespace) -> None:
         'delete', define_query(QUERY_DELETE, args), 'debts')
 
 
+def get_debt(args: Namespace) -> None:
+    create_connection_and_execute_query(
+        'get', define_query(QUERY_GET, args), 'debts', True
+    )
+
+
 def proyection(args: Namespace) -> None:
-    pass
+    results = create_connection_and_execute_query(
+        'get', define_query(QUERY_GET, args), 'debts', False
+    )
+
+    print(f'results: {results}')

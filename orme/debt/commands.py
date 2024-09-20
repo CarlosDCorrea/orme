@@ -36,6 +36,11 @@ def run_create_debt(subparsers):
                             type=float,
                             help='The interest rate monthly of the dept default 0.0',
                             default=0.00)
+    parser_add.add_argument('-mt',
+                            '--month',
+                            type=int,
+                            help=""" Determines the ammount of months the debts will last [option]
+                                     (default: 60)""")
     parser_add.add_argument('--date',
                             type=validate_date,
                             help="""

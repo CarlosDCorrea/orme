@@ -64,6 +64,7 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
                 return
 
             if offset:
+                # if there is more data to show, shell cursor goes 1 line up and ...
                 print('\033[A\033[K', end='\n')
                 print(df[:offset].to_string(index=False,
                                             header=False,
@@ -142,3 +143,18 @@ def total(cur: Cursor, queries: List[str]) -> None:
         return
 
     print('No data found')
+
+
+def get(cur: Cursor, queries: List[str], show_results: bool = True) -> None | Tuple[str | int]:
+    get_query = queries[0]
+
+    cur.execute(get_query)
+    result = cur.fetchone()
+
+    cur.close()
+
+    if show_results:
+        print(result)
+        return
+
+    return result

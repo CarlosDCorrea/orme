@@ -17,13 +17,13 @@ def generate_create_query(args: Namespace) -> Tuple[str, str]:
         lender TEXT,
         description TEXT,
         interest_rate REAL NOT NULL,
-        months INTEGER,
+        months INTEGER DEFAULT 60,
         date TEXT,
         created TEXT,
         updated TEXT
         )
     """
-
+    
     insert_into_debts_query = f"""
     INSERT INTO {TABLE_NAME}(
         value,
@@ -40,7 +40,7 @@ def generate_create_query(args: Namespace) -> Tuple[str, str]:
             '{args.lender}',
             '{args.description}',
             {args.interest_rate},
-            {args.months}
+            {args.months},
             '{args.date}',
             '{today}',
             '{today}'
