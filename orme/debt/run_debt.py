@@ -35,8 +35,6 @@ def define_query(query_type: int, args: Namespace) -> str:
     if query_type == QUERY_DELETE:
         queries = generate_delete_query(present_arguments, TABLE_NAME)
     if query_type == QUERY_GET:
-        if len(present_arguments) > 1:
-            raise ValueError('This command only requires an id')
         queries = generate_get_query(present_arguments, TABLE_NAME)
 
     return queries

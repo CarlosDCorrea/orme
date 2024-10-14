@@ -23,7 +23,7 @@ def generate_create_query(args: Namespace) -> Tuple[str, str]:
         updated TEXT
         )
     """
-    
+
     insert_into_debts_query = f"""
     INSERT INTO {TABLE_NAME}(
         value,

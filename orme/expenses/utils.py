@@ -4,6 +4,29 @@ from typing import List, Tuple
 
 
 def generate_dateframe(args: List[Tuple[str, str]]) -> List[Tuple[str, str | List[str]]]:
+    """
+    Generates a dateframe based in the list of tuple arguments
+
+    input:
+        - args: List(tuple(str, str))
+
+    dateframes availables:
+        - today
+        - yesterday
+
+        - current-week
+        - current-month
+        - current-year
+
+        - last-week
+        - last-month
+        - last-year
+
+    returns:
+        - list(tuple(str, str | list(str)))
+            - tuple[0]: helps to define the operator used for date values in the sql query
+            - tuple[1]: the date or dates to build the sql query
+    """
     local_args: List[Tuple[str, str | List[str]]] = []
     dateframe: str | List[str] = ''
     SUNDAY = 6
