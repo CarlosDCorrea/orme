@@ -3,16 +3,17 @@ from argparse import ArgumentParser, _SubParsersAction
 
 from orme import __app_name__, __version__
 
-from .debt.commands import (run_create_debt,
-                            run_list_debts,
-                            run_update_debt,
-                            run_delete_debt)
+from .debt.commands import (run_create_debt_command,
+                            run_list_debts_command,
+                            run_update_debt_command,
+                            run_delete_debt_command,
+                            run_get_debt_command)
 
-from .expenses.commands import (run_create_expense,
-                                run_list_expenses,
-                                run_update_expenses,
-                                run_delete_expense,
-                                run_total)
+from .expenses.commands import (run_create_expense_command,
+                                run_list_expenses_command,
+                                run_update_expenses_command,
+                                run_delete_expense_command,
+                                run_total_command)
 
 
 def run_options(subparsers: _SubParsersAction) -> None:
@@ -26,16 +27,17 @@ def run_options(subparsers: _SubParsersAction) -> None:
     subparser_debts:  _SubParsersAction[ArgumentParser] = parser_debts.add_subparsers(
         title='[sub-commands]')
 
-    run_create_expense(subparser_expenses)
-    run_list_expenses(subparser_expenses)
-    run_update_expenses(subparser_expenses)
-    run_delete_expense(subparser_expenses)
-    run_total(subparser_expenses)
+    run_create_expense_command(subparser_expenses)
+    run_list_expenses_command(subparser_expenses)
+    run_update_expenses_command(subparser_expenses)
+    run_delete_expense_command(subparser_expenses)
+    run_total_command(subparser_expenses)
 
-    run_create_debt(subparser_debts)
-    run_list_debts(subparser_debts)
-    run_update_debt(subparser_debts)
-    run_delete_debt(subparser_debts)
+    run_create_debt_command(subparser_debts)
+    run_list_debts_command(subparser_debts)
+    run_update_debt_command(subparser_debts)
+    run_delete_debt_command(subparser_debts)
+    run_get_debt_command(subparser_debts)
 
 
 def main():
