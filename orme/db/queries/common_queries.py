@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List, Tuple
 
-from orme.db.common import generate_sql_where_by_operator
+from orme.common import generate_sql_where_by_operator
 from orme.expenses.utils import generate_dateframe
 
 
@@ -77,5 +77,4 @@ def generate_get_query(args: List[Tuple[str, str]], table_name) -> Tuple[str]:
     SELECT * FROM {table_name}
     {where_statement}"""
 
-    print(where_statement)
-    print(get_query)
+    return (get_query,)

@@ -5,7 +5,10 @@ from orme.db.operations import create, list_, update, delete, total, get
 from orme.settings import DATABASE_URL
 
 
-def create_connection_and_execute_query(operation: str, queries: List[str], table_name: str, show_results: bool):
+def create_connection_and_execute_query(operation: str,
+                                        queries: List[str],
+                                        table_name: str,
+                                        show_results: bool = False):
     with sqlite3.connect(DATABASE_URL) as con:
         cur = con.cursor()
 

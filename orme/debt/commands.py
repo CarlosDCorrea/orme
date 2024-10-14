@@ -3,12 +3,13 @@ from datetime import date
 from .run_debt import (create_debt,
                        list_debts,
                        update_debt,
-                       delete_debt)
+                       delete_debt,
+                       get_debt)
 
 from ..validations import validate_date
 
 
-def run_create_debt(subparsers):
+def run_create_debt_command(subparsers):
     parser_add = subparsers.add_parser('add',
                                        help='adds a new debt register whether the user is the debtor or the lender',
                                        allow_abbrev=False)
@@ -52,7 +53,7 @@ def run_create_debt(subparsers):
     parser_add.set_defaults(func=create_debt)
 
 
-def run_list_debts(subparsers):
+def run_list_debts_command(subparsers):
     parser_list = subparsers.add_parser('list',
                                         help='list depts with or without filteres')
 
@@ -102,7 +103,7 @@ def run_list_debts(subparsers):
     parser_list.set_defaults(func=list_debts)
 
 
-def run_update_debt(subparsers):
+def run_update_debt_command(subparsers):
     parser_update = subparsers.add_parser('update',
                                           help="Update the specified debt",
                                           allow_abbrev=False)
@@ -139,11 +140,23 @@ def run_update_debt(subparsers):
     parser_update.set_defaults(func=update_debt)
 
 
-def run_delete_debt(subparsers):
+def run_delete_debt_command(subparsers):
     parser_delete = subparsers.add_parser('delete',
                                           help='Delete the specified debt')
 
     parser_delete.add_argument('--id',
-                               help='The id of the debt to be deleted')
+                               help='The id of the debt to be deleted',
+                               required=True)
 
     parser_delete.set_defaults(func=delete_debt)
+
+
+def run_get_debt_command(subparsers):
+    parser_get = subparsers.add_parser('get',
+                                       help='Get a debt with the specified debt id')
+
+    parser_get.add_argument('--id',
+                            help='The id of the debt to get',
+                            required=True)
+
+    parser_get.set_defaults(func=get_debt)

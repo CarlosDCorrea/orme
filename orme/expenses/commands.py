@@ -11,7 +11,7 @@ from orme.constants import CATEGORIES
 from orme.validations import validate_date
 
 
-def run_create_expense(subparsers: _SubParsersAction):
+def run_create_expense_command(subparsers: _SubParsersAction):
     parser_add = subparsers.add_parser('add',
                                        help='adds a new expense with all its attributes',
                                        allow_abbrev=False)
@@ -49,7 +49,7 @@ def run_create_expense(subparsers: _SubParsersAction):
     parser_add.set_defaults(func=create_expense)
 
 
-def run_list_expenses(subparsers: _SubParsersAction):
+def run_list_expenses_command(subparsers: _SubParsersAction):
     parser_list = subparsers.add_parser('list',
                                         help='list expenses with filters',
                                         allow_abbrev=True)
@@ -108,7 +108,7 @@ def run_list_expenses(subparsers: _SubParsersAction):
     parser_list.set_defaults(func=list_expenses)
 
 
-def run_update_expenses(subparsers: _SubParsersAction):
+def run_update_expenses_command(subparsers: _SubParsersAction):
     parser_update = subparsers.add_parser('update',
                                           help='Update the specified expense',
                                           allow_abbrev=False)
@@ -145,7 +145,7 @@ def run_update_expenses(subparsers: _SubParsersAction):
     parser_update.set_defaults(func=update_expense)
 
 
-def run_delete_expense(subparsers: _SubParsersAction):
+def run_delete_expense_command(subparsers: _SubParsersAction):
     parser_delete = subparsers.add_parser('delete',
                                           help='Delete the specified expense')
 
@@ -156,7 +156,7 @@ def run_delete_expense(subparsers: _SubParsersAction):
     parser_delete.set_defaults(func=delete_expense)
 
 
-def run_total(subparsers: _SubParsersAction):
+def run_total_command(subparsers: _SubParsersAction):
     parser_total: ArgumentParser = subparsers.add_parser('total',
                                                          help='''Gets the count of all the expenses
                                                                  in the time frame specified''')
