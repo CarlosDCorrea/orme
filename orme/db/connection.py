@@ -7,8 +7,7 @@ from orme.settings import DATABASE_URL
 
 def create_connection_and_execute_query(operation: str,
                                         queries: List[str],
-                                        table_name: str,
-                                        show_results: bool = False):
+                                        table_name: str):
     with sqlite3.connect(DATABASE_URL) as con:
         cur = con.cursor()
 
@@ -28,9 +27,6 @@ def create_connection_and_execute_query(operation: str,
             total(cur, queries)
 
         if operation == 'get':
-            if show_results:
-                get(cur, queries)
-            else:
-                return get(cur, queries, show_results)
+            return get(cur, queries)
 
     print('connection closed')

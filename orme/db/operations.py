@@ -92,10 +92,7 @@ def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
             # print('finishing with offset {} and limit {} and remaining {}'.format(offset, limit, remaining))
 
     except sqlite3.OperationalError as e:
-        error = f'We can\'t perform this action because the table {table_name} does not exists'
-        print('This is the real error')
         print(e)
-        print(f'error {error}')
         cur.close()
 
 
@@ -130,8 +127,6 @@ def total(cur: Cursor, queries: List[str]) -> None:
     total_expenses_value_query: str = queries[0]
     count_registers: str = queries[1]
 
-    # print(total_expenses_value_query)
-    # print(count_registers)
     cur.execute(total_expenses_value_query)
     result: int | None = cur.fetchone()[0]
 
@@ -145,16 +140,11 @@ def total(cur: Cursor, queries: List[str]) -> None:
     print('No data found')
 
 
-def get(cur: Cursor, queries: List[str], show_results: bool = True) -> None | Tuple[str | int]:
+def get(cur: Cursor, queries: List[str]) -> None | Tuple[str | int]:
     get_query = queries[0]
 
     cur.execute(get_query)
     result = cur.fetchone()
 
     cur.close()
-
-    if show_results:
-        print(result)
-        return
-
     return result

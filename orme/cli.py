@@ -59,7 +59,6 @@ def main():
         version=f'{__app_name__} version: {__version__}'
     )
 
-    # REFACTOR: Commands should go 'expenses list' instead of 'list expenses'
     subparsers_options: _SubParsersAction[ArgumentParser] = parser.add_subparsers(
         title='[commands]')
 

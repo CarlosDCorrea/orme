@@ -64,14 +64,17 @@ def delete_debt(args: Namespace) -> None:
 
 
 def get_debt(args: Namespace) -> None:
-    create_connection_and_execute_query(
-        'get', define_query(QUERY_GET, args), 'debts', True
+    # lets just work with it for now
+    result = create_connection_and_execute_query(
+        'get', define_query(QUERY_GET, args), 'debts'
     )
+
+    print(result)
 
 
 def proyection(args: Namespace) -> None:
     results = create_connection_and_execute_query(
-        'get', define_query(QUERY_GET, args), 'debts', False
+        'get', define_query(QUERY_GET, args), 'debts'
     )
 
     print(f'results: {results}')
