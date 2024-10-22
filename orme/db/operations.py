@@ -7,8 +7,7 @@ import pandas as pd
 
 
 def create(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
-    create_table_query = queries[0]
-    insert_into_query = queries[1]
+    with open()
 
     cur.execute(create_table_query)
     cur.execute(insert_into_query)
