@@ -70,9 +70,9 @@ def generate_total_query(args: List[Tuple[str, str]], table_name) -> Tuple[str]:
 
 def generate_get_query(args: List[Tuple[str, str]], table_name) -> Tuple[str]:
     field: str = args[0][0]
-    debt_id: int = args[0][1]
+    value: int = args[0][1]
 
-    where_statement = f'WHERE {field} == {debt_id}'
+    where_statement = f'WHERE {field} == {value}'
     get_query: str = f"""
     SELECT * FROM {table_name}
     {where_statement}"""
