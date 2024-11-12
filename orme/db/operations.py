@@ -7,17 +7,26 @@ import pandas as pd
 
 
 def create(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
-    with open()
+    create_table_query = queries[0]
 
     cur.execute(create_table_query)
+
+    if len(queries) > 1:
+        insert_into_query = queries[1]
+        cur.execute(insert_into_query)
+
     cur.execute(insert_into_query)
     con.commit()
     cur.close()
 
-    print(f'Register created in table {table_name} successfully')
+    if table_name != 'migrations':
+        print(f'Register created in table {table_name} successfully')
 
 
 def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
+    # TODO This function prints the results on the way, it should return
+    # the results and the caller should manage the logic if it should
+    # or not keep being executed
     query_results = queries[0]
     query_count = queries[1]
 

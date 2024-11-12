@@ -1,5 +1,5 @@
 import sqlite3
-from typing import List
+from typing import List, Tuple
 
 from orme.db.operations import create, list_, update, delete, total, get
 from orme.settings import DATABASE_URL
@@ -7,7 +7,7 @@ from orme.settings import DATABASE_URL
 
 def create_connection_and_execute_query(operation: str,
                                         queries: List[str],
-                                        table_name: str):
+                                        table_name: str) -> Tuple[str | int] | None:
     with sqlite3.connect(DATABASE_URL) as con:
         cur = con.cursor()
 
