@@ -1,4 +1,4 @@
-from typing import Tuple, Dict
+from typing import Tuple
 
 
 TABLE_NAME = 'migrations'
@@ -17,20 +17,6 @@ def create_table() -> Tuple[str]:
     """
 
     return (create_query,)
-
-
-def insert_into(data: Dict[str, Tuple[str | int]]) -> Tuple[str]:
-    character = ', \n'
-    insert_into: str = f"""
-    INSERT INTO {TABLE_NAME}(
-        {character.join(data)}) VALUES(
-        {character.join([f"'{value}'"
-                         if isinstance(value, str)
-                         else value
-                         for value in data.values()])}
-            );"""
-
-    return ('', insert_into)
 
 
 def list_(model: str) -> Tuple[str]:
