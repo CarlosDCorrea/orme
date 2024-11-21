@@ -1,48 +1,42 @@
 from typing import List, Tuple
 
 
-def generate_sql_where_by_operator(args: List[Tuple[str, str | int]]) -> str:
+def generate_sql_where_by_operator(data: List[Tuple[str, str, str | int]]) -> str:
     where_statement = 'WHERE '
     common_operators = ['<=', '>=', '=']
 
-    for arg in args:
+    for record in data:
         if where_statement != 'WHERE ':
             where_statement += 'AND'
 
-        operator = get_operator(arg[0])
-        field = get_field_name(arg[0])
+        field_name, operator, values = record
 
-        values: str | int | List[str | int] = arg[1]
         if operator in common_operators:
             if isinstance(values, str):
                 values = f"'{values}'"
-            where_statement += f'{field} {operator} {values}'
+            where_statement += f'{field_name} {operator} {values}'
         elif operator == '><':
             if isinstance(values[0], str):
                 values[0], values[1] = f"'{values[0]}'", f"'{values[1]}'"
-            where_statement += f"{field} BETWEEN {values[0]} AND {values[1]}"
+            where_statement += f"{field_name} BETWEEN {values[0]} AND {values[1]}"
     return where_statement
 
 
-def get_operator(arg: str) -> str | None:
-    match arg:
-        case arg if arg.startswith('between'):
+def get_operator(command: str) -> str | None:
+    match command:
+        case command if command.startswith('between'):
             return '><'
-        case arg if arg.startswith('greater'):
+        case command if command.startswith('greater'):
             return '>='
-        case arg if arg.startswith('less'):
+        case command if command.startswith('less'):
             return '<='
-        case arg if arg.startswith('equal'):
+        case command if command.startswith('equal'):
             return '='
-        case _:
-            return None
 
 
-def get_field_name(arg: str) -> str | None:
-    match arg:
-        case arg if arg.endswith('value'):
+def get_field_name(command: str) -> str | None:
+    match command:
+        case command if command.endswith('value'):
             return 'value'
-        case arg if arg.endswith('date'):
+        case command if command.endswith('date'):
             return 'date'
-        case _:
-            return None
