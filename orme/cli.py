@@ -9,11 +9,11 @@ from .debt.commands import (run_create_debt_command,
                             run_delete_debt_command,
                             run_get_debt_command)
 
-from .expenses.commands import (run_create_expense_command,
-                                run_list_expenses_command,
-                                run_update_expenses_command,
-                                run_delete_expense_command,
-                                run_total_command)
+from .expense.commands import (run_create_expense_command,
+                               run_list_expenses_command,
+                               run_update_expenses_command,
+                               run_delete_expense_command,
+                               run_total_command)
 
 
 def run_options(subparsers: _SubParsersAction) -> None:

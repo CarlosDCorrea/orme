@@ -1,6 +1,6 @@
 from orme import cli
 
-from .db.migrations import app_need_migrations
+from .db.migrations import run_migrations, _create_migration
 
 
 def main():
@@ -9,5 +9,6 @@ def main():
 
 
 if __name__ == '__main__':
-    app_need_migrations()
+    _create_migration()
+    # run_migrations()
     # main()

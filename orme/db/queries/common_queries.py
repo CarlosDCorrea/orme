@@ -2,7 +2,7 @@ from datetime import date
 from typing import List, Tuple
 
 from orme.common import generate_sql_where_by_operator
-from orme.expenses.utils import generate_dateframe
+from orme.expense.utils import generate_dateframe
 
 
 def generate_list_query(args: List[Tuple[str, str | int]], table_name: str) -> Tuple[str, str]:
