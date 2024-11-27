@@ -1,8 +1,8 @@
 import sqlite3
 from typing import List, Tuple
 
-from orme.db.operations import create, list_, update, delete, total, get
-from orme.settings import DATABASE_URL
+from .operations import create, list_, update, delete, total, get
+from ..settings import DATABASE_URL
 
 
 def create_connection_and_execute_query(operation: str,
@@ -28,5 +28,3 @@ def create_connection_and_execute_query(operation: str,
 
         if operation == 'get':
             return get(cur, queries)
-
-    print('connection closed')
