@@ -7,13 +7,8 @@ import pandas as pd
 
 
 def create(cur: Cursor, con: Connection, queries: List[str], table_name: str) -> None:
-    create_table_query = queries[0]
-
-    cur.execute(create_table_query)
-
-    if len(queries) > 1:
-        insert_into_query = queries[1]
-        cur.execute(insert_into_query)
+    create_query = queries[0]
+    cur.execute(create_query)
 
     con.commit()
     cur.close()
@@ -23,14 +18,12 @@ def create(cur: Cursor, con: Connection, queries: List[str], table_name: str) ->
 
 
 def list_(cur: Cursor, queries: List[str], table_name: str) -> None:
-    # TODO This function prints the results on the way, it should return
-    # the results and the caller should manage the logic if it should
-    # or not keep being executed
     query_results = queries[0]
     query_count = queries[1]
 
     get_table_columns_query = f'PRAGMA table_info({table_name})'
     offset: int = 0
+
     try:
         cur.execute(get_table_columns_query, ())
         columns: List[Tuple[Union[int, str]]] = cur.fetchall()
