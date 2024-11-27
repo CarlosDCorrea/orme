@@ -31,4 +31,4 @@ def generate_create_query(args: Namespace) -> Tuple[str, str]:
             '{today}'
             )"""
 
-    return (create_debts_table_query, insert_into_debts_query)
+    return (insert_into_debts_query,)

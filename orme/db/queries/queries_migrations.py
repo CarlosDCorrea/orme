@@ -19,10 +19,10 @@ def create_table() -> Tuple[str]:
     return (create_query,)
 
 
-def list_(model: str) -> Tuple[str]:
+def list_(app: str) -> Tuple[str]:
     list_query: str = f"""
     SELECT * FROM {TABLE_NAME}
-    WHERE model = '{model}';
+    WHERE app = '{app}';
     """
 
     return (list_query,)
