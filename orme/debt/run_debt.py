@@ -4,77 +4,64 @@ from typing import Tuple, List
 from orme.utils import get_present_arguments
 
 from orme.db.queries.queries_debts import generate_create_query
-from orme.db.queries.common_queries import (generate_list_query,
+from orme.db.queries.common_queries import (generate_insert_into_query,
+                                            generate_list_query,
                                             generate_update_query,
                                             generate_delete_query,
                                             generate_get_query)
 from orme.db.connection import create_connection_and_execute_query
-from orme.settings import (QUERY_CREATE,
-                           QUERY_LIST,
-                           QUERY_UPDATE,
-                           QUERY_DELETE,
-                           QUERY_GET)
 
 
 TABLE_NAME = 'debts'
 
 
-def define_query(query_type: int, args: Namespace) -> str:
-    present_arguments: List[Tuple] = get_present_arguments(args)
-
-    queries: List[str] = []
-
-    if query_type == QUERY_CREATE:
-        queries = generate_create_query(args)
-    if query_type == QUERY_LIST:
-        queries = generate_list_query(present_arguments, TABLE_NAME)
-    if query_type == QUERY_UPDATE:
-        if len(present_arguments) == 1:
-            raise ValueError('This command requires the fields to be updated')
-        queries = generate_update_query(present_arguments, TABLE_NAME)
-    if query_type == QUERY_DELETE:
-        queries = generate_delete_query(present_arguments, TABLE_NAME)
-    if query_type == QUERY_GET:
-        queries = generate_get_query(present_arguments, TABLE_NAME)
-
-    return queries
-
-
 def create_debt(args: Namespace) -> None:
+    queries: List[str] = generate_insert_into_query(args)
     create_connection_and_execute_query(
-        'create', define_query(QUERY_CREATE, args), TABLE_NAME)
+        'create', queries, TABLE_NAME)
 
 
 def list_debts(args: Namespace) -> None:
+    present_arguments: List[Tuple] = get_present_arguments(args)
+
+    queries: List[str] = generate_list_query(present_arguments, TABLE_NAME)
     create_connection_and_execute_query(
-        'list', define_query(QUERY_LIST, args), 'debts')
+        'list', queries, 'debts')
 
 
 def update_debt(args: Namespace) -> None:
-    try:
-        create_connection_and_execute_query(
-            'update', define_query(QUERY_UPDATE, args), 'debts')
-    except ValueError as e:
-        print(e)
+    present_arguments: List[Tuple] = get_present_arguments(args)
+    if len(present_arguments) == 1:
+        raise ValueError('This command requires the fields to be updated')
+
+    queries: List[str] = generate_update_query(present_arguments, TABLE_NAME)
+    create_connection_and_execute_query(
+        'update', queries, 'debts')
 
 
 def delete_debt(args: Namespace) -> None:
+    present_arguments: List[Tuple] = get_present_arguments(args)
+
+    queries: List[str] = generate_delete_query(present_arguments, TABLE_NAME)
     create_connection_and_execute_query(
-        'delete', define_query(QUERY_DELETE, args), 'debts')
+        'delete', queries, 'debts')
 
 
 def get_debt(args: Namespace) -> None:
+    present_arguments: List[Tuple] = get_present_arguments(args)
+
     # lets just work with it for now
-    result = create_connection_and_execute_query(
-        'get', define_query(QUERY_GET, args), 'debts'
+    queries: List[str] = generate_get_query(present_arguments, TABLE_NAME)
+    create_connection_and_execute_query(
+        'get', queries, 'debts'
     )
 
-    print(result)
 
+""" def proyection(args: Namespace) -> None:
+    present_arguments: List[Tuple] = get_present_arguments(args)
 
-def proyection(args: Namespace) -> None:
-    results = create_connection_and_execute_query(
-        'get', define_query(QUERY_GET, args), 'debts'
+    create_connection_and_execute_query(
+        'get', queries, 'debts'
     )
 
-    print(f'results: {results}')
+    print(f'results: {results}') """
