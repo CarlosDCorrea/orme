@@ -6,15 +6,15 @@ from ...common import get_operator, get_field_name
 from orme.expense.utils import generate_dateframe
 
 
-def generate_insert_into_query(args: Dict[str, Tuple[str | int]], table_name):
+def generate_insert_into_query(data: Dict[str, Tuple[str | int]], table_name):
     character = ', \n'
     insert_into: str = f"""
     INSERT INTO {table_name}(
-        {character.join(args)}) VALUES(
+        {character.join(data)}) VALUES(
         {character.join([f"'{value}'"
                          if isinstance(value, str)
                          else value
-                         for value in args.values()])}
+                         for value in data.values()])}
             );"""
 
     return (insert_into,)
@@ -25,14 +25,17 @@ def generate_list_query(args: List[Tuple[str, str | int]], table_name: str) -> T
 
     data: List[Tuple[str, str, str | int | List[str | int]]] = []
 
-    for arg in args:
-        command: str = arg[0]
-        values: str | int | List[str | int] = arg[1]
-        field_name, operator = get_field_name(command), get_operator(command)
+    if args:
+        for arg in args:
+            command: str = arg[0]
+            values: str | int | List[str | int] = arg[1]
+            field_name: str = get_field_name(command)
+            operator: str = get_operator(command)
 
-        data.append((field_name, operator, values))
+            data.append((field_name, operator, values))
 
-    where_statement = generate_sql_where_by_operator(data)
+        where_statement = generate_sql_where_by_operator(data)
+
     query_results = f"""
                     SELECT * FROM {table_name}
                     {where_statement}
