@@ -8,9 +8,3 @@ APPS = [
     'expense',
     'debt'
 ]
-
-QUERY_CREATE = 1
-QUERY_LIST = 2
-QUERY_UPDATE = 3
-QUERY_DELETE = 4
-QUERY_GET = 5
