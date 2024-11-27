@@ -1,31 +1,42 @@
 import os
 import sqlite3
 import importlib
-
 from datetime import date
+
 from sqlite3 import Cursor, OperationalError
 from typing import Tuple, List, Set, Dict
 
 from ...settings import DATABASE_URL, MIGRATIONS_BASE_PATH, APPS
 from ..connection import create_connection_and_execute_query
-from ..queries.queries_migrations import create_table, insert_into, list_
+from ..queries.queries_migrations import list_
+from ...db.queries.common_queries import generate_insert_into_query
 
 
-def _create_migrations_table() -> None:
-    create_connection_and_execute_query('create', create_table(), 'migrations')
+def _create_migration_table() -> None:
+    query: str = """
+    CREATE TABLE if not exists migrations(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        app TEXT,
+        name TEXT,
+        created TEXT,
+        UNIQUE(app, name)
+        );
+    """
+
+    try:
+        with sqlite3.connect(DATABASE_URL) as con:
+            cur: sqlite3.Cursor = con.cursor()
+
+            cur.execute(query)
+            con.commit()
+    except sqlite3.OperationalError as e:
+        print(f'An error ocurred while executing migration {e}')
+
+
+def _create_migration(data: Dict[str, str | int]) -> None:
+    create_connection_and_execute_query(
+        'create', generate_insert_into_query(data, 'migrations'), 'migrations')
     return
-
-
-def _create_migration(*values: Dict[str, str | int]) -> None:
-    data = {
-        'model': 'debt',
-        'name': '0001_initial_insert_into',
-        'created': date.today().isoformat(),
-    }
-
-    print(insert_into(data)[1])
-
-    create_connection_and_execute_query('create', insert_into(data), 'migrations')
 
 
 def _get_unnaplied_migrations() -> Set[str]:
@@ -33,7 +44,7 @@ def _get_unnaplied_migrations() -> Set[str]:
     # For each APP get the migrations's clean name to compare it with the registered migrations
     migrations = {app: {os.path.splitext(migration)[0]
                         for migration in os.listdir(os.path.join(MIGRATIONS_BASE_PATH, f"{app}/migrations"))
-                        if os.path.isfile(migration)}
+                        if os.path.isfile(os.path.join(MIGRATIONS_BASE_PATH, f'{app}/migrations/{migration}'))}
                   for app in APPS
                   }
 
@@ -56,18 +67,30 @@ def _get_unnaplied_migrations() -> Set[str]:
 
 def run_migrations() -> Tuple[bool, bool, Tuple[str]]:
     # There is always be a db because we need to have the migration table created
-    _create_migrations_table()
+    _create_migration_table()
+    unnaplied_migrations: Dict[str, Set[str]] = _get_unnaplied_migrations()
 
-    unnaplied_migrations: Dict[str] = _get_unnaplied_migrations()
+    """ [print(f'({len(unnaplied_migrations[app])}) unnaplied migrations found for {app}')
+     for app in unnaplied_migrations] """
 
-    [print(f'({len(unnaplied_migrations[app])}) unnaplied migrations found for {app}')
-     for app in unnaplied_migrations]
+    # Make sure at least one of the migrations sets inside the dictionary have unnaplied migrations
+    if [migrations_set for migrations_set in unnaplied_migrations.values() if len(migrations_set)]:
+        print(f"Migrations to be applied found for apps {', '.join(unnaplied_migrations)}")
 
-    if len(unnaplied_migrations.values()):
         for app, migrations in unnaplied_migrations.items():
             for migration in migrations:
                 # We asume all users will have the migration dir
-                print(migration)
                 migration_to_run = importlib.import_module(
-                    f'{migration}', '...expense.migrations')
+                    f'.{migration}', f'orme.{app}.migrations')
                 migration_to_run.run()
+
+                print(f'- {migration} applied for app {app}')
+
+                # Add the migration to the migrations table after it was successfully runed
+                data: Dict[str, Tuple[str | int]] = {
+                    'app': f'{app}',
+                    'name': f'{migration}',
+                    'created': date.today().isoformat()
+                }
+
+                _create_migration(data)
