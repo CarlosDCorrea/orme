@@ -34,7 +34,7 @@ def run_create_expense_command(subparsers: _SubParsersAction):
     parser_add.add_argument('-u',
                             '--user',
                             type=str,
-                            help='Name of the user that generate the expense (default: Carlos)')
+                            help='Name of the user that generate the expense')
     parser_add.add_argument('--date',
                             type=validate_date,
                             help="""

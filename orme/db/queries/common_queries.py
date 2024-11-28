@@ -13,7 +13,7 @@ def generate_insert_into_query(data: Dict[str, Tuple[str | int]], table_name):
         {character.join(data)}) VALUES(
         {character.join([f"'{value}'"
                          if isinstance(value, str)
-                         else value
+                         else str(value)
                          for value in data.values()])}
             );"""
 

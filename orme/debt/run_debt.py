@@ -3,7 +3,6 @@ from typing import Tuple, List
 
 from orme.utils import get_present_arguments
 
-from orme.db.queries.queries_debts import generate_create_query
 from orme.db.queries.common_queries import (generate_insert_into_query,
                                             generate_list_query,
                                             generate_update_query,

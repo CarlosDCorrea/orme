@@ -7,7 +7,7 @@ def query_create() -> str:
     CREATE TABLE if not exists expenses(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         value INTEGER NOT NULL,
-        user TEXT NOT NULL,
+        user TEXT,
         category TEXT NOT NULL,
         description TEXT,
         is_divided INTEGER NOT NULL,
