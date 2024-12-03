@@ -39,7 +39,7 @@ def generate_list_query(args: List[Tuple[str, str | int]], table_name: str) -> T
     query_results = f"""
                     SELECT * FROM {table_name}
                     {where_statement}
-                    ORDER BY date DESC
+                    ORDER BY {'date' if table_name != 'users' else 'created'} DESC
                     LIMIT ?, ?
                     """
 
