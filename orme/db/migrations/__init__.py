@@ -67,7 +67,6 @@ def _get_unnaplied_migrations() -> Set[str]:
 
 def run_migrations() -> Tuple[bool, bool, Tuple[str]]:
     # There is always be a db because we need to have the migration table created
-    print('running migrations')
     _create_migration_table()
     unnaplied_migrations: Dict[str, Set[str]] = _get_unnaplied_migrations()
 
