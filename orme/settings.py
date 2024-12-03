@@ -6,5 +6,6 @@ MIGRATIONS_BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 APPS = [
     'expense',
-    'debt'
+    'debt',
+    'user'
 ]

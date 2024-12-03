@@ -1,7 +1,8 @@
+from datetime import date
 from argparse import Namespace
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 
-from orme.utils import get_present_arguments
+from orme.utils import get_present_arguments, get_dict_present_arguments
 
 from orme.db.queries.common_queries import (generate_insert_into_query,
                                             generate_list_query,
@@ -11,56 +12,52 @@ from orme.db.queries.common_queries import (generate_insert_into_query,
 from orme.db.connection import create_connection_and_execute_query
 
 
-TABLE_NAME = 'debts'
+TABLE_NAME = 'users'
 
 
-def create_debt(args: Namespace) -> None:
-    queries: List[str] = generate_insert_into_query(args, TABLE_NAME)
+def create_user(args: Namespace) -> None:
+    present_arguments: Dict[str, str | int | List[str | int]] = get_dict_present_arguments(args)
+    today: str = date.today().isoformat()
+
+    present_arguments['created'] = today
+    present_arguments['updated'] = today
+
+    queries: List[str] = generate_insert_into_query(present_arguments, TABLE_NAME)
     create_connection_and_execute_query(
         'create', queries, TABLE_NAME)
 
 
-def list_debts(args: Namespace) -> None:
+def list_users(args: Namespace) -> None:
     present_arguments: List[Tuple] = get_present_arguments(args)
-
     queries: List[str] = generate_list_query(present_arguments, TABLE_NAME)
+
     create_connection_and_execute_query(
-        'list', queries, 'debts')
+        'list', queries, TABLE_NAME)
 
 
-def update_debt(args: Namespace) -> None:
+def update_user(args: Namespace) -> None:
     present_arguments: List[Tuple] = get_present_arguments(args)
     if len(present_arguments) == 1:
         raise ValueError('This command requires the fields to be updated')
 
     queries: List[str] = generate_update_query(present_arguments, TABLE_NAME)
     create_connection_and_execute_query(
-        'update', queries, 'debts')
+        'update', queries, TABLE_NAME)
 
 
-def delete_debt(args: Namespace) -> None:
+def delete_user(args: Namespace) -> None:
     present_arguments: List[Tuple] = get_present_arguments(args)
 
     queries: List[str] = generate_delete_query(present_arguments, TABLE_NAME)
     create_connection_and_execute_query(
-        'delete', queries, 'debts')
+        'delete', queries, TABLE_NAME)
 
 
-def get_debt(args: Namespace) -> None:
+def get_user(args: Namespace) -> None:
     present_arguments: List[Tuple] = get_present_arguments(args)
 
     # lets just work with it for now
     queries: List[str] = generate_get_query(present_arguments, TABLE_NAME)
     create_connection_and_execute_query(
-        'get', queries, 'debts'
+        'get', queries, TABLE_NAME
     )
-
-
-""" def proyection(args: Namespace) -> None:
-    present_arguments: List[Tuple] = get_present_arguments(args)
-
-    create_connection_and_execute_query(
-        'get', queries, 'debts'
-    )
-
-    print(f'results: {results}') """
