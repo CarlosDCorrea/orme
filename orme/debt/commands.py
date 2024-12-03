@@ -22,12 +22,18 @@ def run_create_debt_command(subparsers):
     parser_add.add_argument('-dpr',
                             '--deptor',
                             type=str,
-                            help='The name of the deptor [optional]'
+                            help="""Name of the debtor,
+                                    the name has to be some already registered in Orme
+                                    and is the combination of 'first and last name',
+                                    it is also case sensitive [optional]"""
                             )
     parser_add.add_argument('-ld',
                             '--lender',
                             type=str,
-                            help='The name of the lender [optional]')
+                            help="""Name of the lender,
+                                    the name has to be some already registered in Orme
+                                    and is the combination of 'first and last name',
+                                    it is also case sensitive [optional]""")
     parser_add.add_argument('-desc',
                             '--description',
                             type=str,
