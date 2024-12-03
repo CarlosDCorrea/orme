@@ -9,5 +9,6 @@ def main():
 
 
 if __name__ == '__main__':
+    print('i am in main')
     run_migrations()
     main()
