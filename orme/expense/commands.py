@@ -34,7 +34,10 @@ def run_create_expense_command(subparsers: _SubParsersAction):
     parser_add.add_argument('-u',
                             '--user',
                             type=str,
-                            help='Name of the user that generate the expense')
+                            help="""Name of the user that generate the expense,
+                                    the name has to be some already registered in Orme
+                                    and is the combination of 'first and last name',
+                                    it is also case sensitive [optional]""")
     parser_add.add_argument('--date',
                             type=validate_date,
                             help="""
