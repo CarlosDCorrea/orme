@@ -15,16 +15,25 @@ from .expense.commands import (run_create_expense_command,
                                run_delete_expense_command,
                                run_total_command)
 
+from .user.commands import (run_create_user_command,
+                            run_list_users_command,
+                            run_update_user_command,
+                            run_delete_user_command)
+
 
 def run_options(subparsers: _SubParsersAction) -> None:
     parser_expenses: ArgumentParser = subparsers.add_parser('expenses',
                                                             help='Executes all operations related to expenses')
     parser_debts: ArgumentParser = subparsers.add_parser('debts',
                                                          help='Executes all operations related to debt')
+    parser_users: ArgumentParser = subparsers.add_parser('users',
+                                                         help='Executes all operations related to users')
 
     subparser_expenses: _SubParsersAction[ArgumentParser] = parser_expenses.add_subparsers(
         title='[sub-commands]')
     subparser_debts:  _SubParsersAction[ArgumentParser] = parser_debts.add_subparsers(
+        title='[sub-commands]')
+    subparser_users:  _SubParsersAction[ArgumentParser] = parser_users.add_subparsers(
         title='[sub-commands]')
 
     run_create_expense_command(subparser_expenses)
@@ -38,6 +47,11 @@ def run_options(subparsers: _SubParsersAction) -> None:
     run_update_debt_command(subparser_debts)
     run_delete_debt_command(subparser_debts)
     run_get_debt_command(subparser_debts)
+
+    run_create_user_command(subparser_users)
+    run_list_users_command(subparser_users)
+    run_update_user_command(subparser_users)
+    run_delete_user_command(subparser_users)
 
 
 def main():
