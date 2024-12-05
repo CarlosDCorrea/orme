@@ -34,7 +34,7 @@ def run_list_users_command(subparsers: _SubParsersAction):
 
 
 def run_update_user_command(subparsers: _SubParsersAction):
-    parser_update: ArgumentParser = subparsers.add_parser('upddate',
+    parser_update: ArgumentParser = subparsers.add_parser('update',
                                                           help='Update the user with the specified id',
                                                           allow_abbrev=False)
     parser_update.add_argument('--id',
@@ -44,12 +44,11 @@ def run_update_user_command(subparsers: _SubParsersAction):
     parser_update.add_argument('-fn',
                                '--first-name',
                                type=str,
-                               help='The new first name of the user')
+                               help='The new first name of the user, you must consider uniqueness')
     parser_update.add_argument('-ln',
                                '--last-name',
                                type=str,
-                               help='The new last name of the user')
-
+                               help='The new last name of the user, you must consider uniqueness')
     parser_update.set_defaults(func=update_user)
 
 

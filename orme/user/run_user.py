@@ -41,6 +41,7 @@ def update_user(args: Namespace) -> None:
         raise ValueError('This command requires the fields to be updated')
 
     queries: List[str] = generate_update_query(present_arguments, TABLE_NAME)
+
     create_connection_and_execute_query(
         'update', queries, TABLE_NAME)
 
